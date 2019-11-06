@@ -2,7 +2,7 @@
 
 # Alfred Ditto
 
-Alfred Ditto provides an API to build test data-sets and test doubles for [Alfresco Content Repository](https://alfresco.com) for data-centric integration tests.
+Alfred Ditto provides an API to build test data-sets and test doubles for [Alfresco Content Repository](https://eu.xenit.testing.ditto.alfresco.com) for data-centric integration tests.
 
 ## Usage
 
