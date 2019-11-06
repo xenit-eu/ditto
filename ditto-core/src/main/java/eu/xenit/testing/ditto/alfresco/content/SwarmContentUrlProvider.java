@@ -1,8 +1,8 @@
 package eu.xenit.testing.ditto.alfresco.content;
 
-import eu.xenit.testing.ditto.alfresco.ContentUrlProvider;
 import eu.xenit.testing.ditto.alfresco.Node;
 import eu.xenit.testing.ditto.alfresco.Node.NodeContext;
+import eu.xenit.testing.ditto.alfresco.ContentUrlProvider;
 import java.util.UUID;
 
 public class SwarmContentUrlProvider implements ContentUrlProvider {
