@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class NodeContainer {
 
@@ -63,5 +64,9 @@ public class NodeContainer {
     public Optional<Node> getNodeByContentUrl(String contentUrl) {
         Objects.requireNonNull(contentUrl, "Argument 'contentUrl' is required");
         return Optional.ofNullable(this.contentLookup.get(contentUrl));
+    }
+
+    public Stream<Node> stream() {
+        return this.nodesById.values().stream();
     }
 }
