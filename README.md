@@ -2,11 +2,11 @@
 
 # XeniT Ditto
 
-XeniT Ditto provides an API to build test data-sets and test doubles for [Alfresco Content Repository](https://alfresco.com)
-for data-centric integration tests.
+XeniT Ditto mimics the Alfresco data model an provides an API to build test Alfresco data-sets and test doubles for [Alfresco Content Repository](https://alfresco.com)
+remote api clients.
 
-The intention is that applications that use an Alfresco remote API, don't need to spin up a full Alfresco systems for
-various integration tests, but can use this library in-process.
+This is useful in data-centric integration tests where the system under test, depends on Alfresco. You don't need to
+spin up a full Alfresco and load it with test-data for every test, but use a drop-in-replacement test-doubles instead.
 
 ## Usage
 
