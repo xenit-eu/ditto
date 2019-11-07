@@ -11,7 +11,7 @@ import java.util.Set;
 public class NodeInitializer {
 
 
-    private final Set<String> auditableBlackListTypes = new HashSet<>(Collections.singletonList(SystemModel.StoreRoot));
+    private final Set<String> auditableBlackListTypes = new HashSet<>(Collections.singletonList(SystemModel.STORE_ROOT));
     private final String DEFAULT_LOCALE = "en_US";
 
     public void accept(Node node, NodeContext context) {
@@ -24,14 +24,14 @@ public class NodeInitializer {
 
     private void setDefaultSystemProperties(Node node) {
         // primary node-id is also present as a property
-        node.getProperties().put(SystemModel.NodeDbid, node.getNodeId());
+        node.getProperties().put(SystemModel.NODE_DBID, node.getNodeId());
 
         // noderef properties
-        node.getProperties().putIfAbsent(SystemModel.StoreProtocol, node.getNodeRef().getStoreProtocol());
-        node.getProperties().putIfAbsent(SystemModel.StoreIdentifier, node.getNodeRef().getStoreIdentifier());
-        node.getProperties().putIfAbsent(SystemModel.NodeUuid, node.getNodeRef().getUuid());
+        node.getProperties().putIfAbsent(SystemModel.STORE_PROTOCOL, node.getNodeRef().getStoreProtocol());
+        node.getProperties().putIfAbsent(SystemModel.STORE_IDENTIFIER, node.getNodeRef().getStoreIdentifier());
+        node.getProperties().putIfAbsent(SystemModel.NODE_UUID, node.getNodeRef().getUuid());
 
-        node.getProperties().putIfAbsent(SystemModel.Locale, DEFAULT_LOCALE);
+        node.getProperties().putIfAbsent(SystemModel.LOCALE, DEFAULT_LOCALE);
     }
 
     private void setDefaultContentModelProperties(Node node) {
@@ -58,10 +58,10 @@ public class NodeInitializer {
 
         node.getAspects().add(ContentModel.AUDITABLE);
 
-        node.getProperties().putIfAbsent(ContentModel.Creator, "System");
-        node.getProperties().putIfAbsent(ContentModel.Created, context.getInstant().toString());
-        node.getProperties().putIfAbsent(ContentModel.Modifier, "System");
-        node.getProperties().putIfAbsent(ContentModel.Modified, context.getInstant().toString());
+        node.getProperties().putIfAbsent(ContentModel.CREATOR, "System");
+        node.getProperties().putIfAbsent(ContentModel.CREATED, context.getInstant().toString());
+        node.getProperties().putIfAbsent(ContentModel.MODIFIER, "System");
+        node.getProperties().putIfAbsent(ContentModel.MODIFIED, context.getInstant().toString());
     }
 
     private void setContentData(Node node, NodeContext context) {

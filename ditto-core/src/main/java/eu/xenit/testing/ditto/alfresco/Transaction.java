@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-class Transaction {
+public class Transaction {
 
     private final long id;
     private final long version = 1;

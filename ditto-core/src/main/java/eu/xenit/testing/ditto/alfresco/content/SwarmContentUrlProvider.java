@@ -21,5 +21,4 @@ public class SwarmContentUrlProvider implements ContentUrlProvider {
 
         return contentUrl.toString();
     }
-
 }

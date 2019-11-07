@@ -90,7 +90,7 @@ public class AlfrescoDataSet {
                     .addTransaction(txn -> txn
                             .skipToNodeId(12)
                             .addNode(node -> node
-                                    .type(SystemModel.StoreRoot)
+                                    .type(SystemModel.STORE_ROOT)
                             )
                             .addFolder("Company Home")
                             .addFolder("Space Templates")
