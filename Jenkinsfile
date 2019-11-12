@@ -19,6 +19,12 @@ pipeline {
                 sh "./gradlew check"
             }
         }
+
+        stage("Publishing") {
+            steps {
+                sh "./gradlew publish"
+            }
+        }
     }
 
     post {

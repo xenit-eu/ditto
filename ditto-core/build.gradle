@@ -28,8 +28,23 @@ test {
 
 publishing {
     publications {
-        maven(MavenPublication) {
+        jar(MavenPublication) {
             from components.java
+        }
+    }
+    repositories {
+        maven {
+            name = 'Xenit'
+            if (version.endsWith('SNAPSHOT')) {
+                url = 'https://artifactory.xenit.eu/artifactory/libs-snapshot-local'
+            } else {
+                url = 'https://artifactory.xenit.eu/artifactory/libs-release-local'
+            }
+
+            credentials {
+                username property("eu.xenit.artifactory.username")
+                password property("eu.xenit.artifactory.password")
+            }
         }
     }
 }
