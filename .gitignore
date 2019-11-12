@@ -2,5 +2,6 @@
 
 /build
 /ditto-core/build
+/ditto-core/out
 
 *.iml

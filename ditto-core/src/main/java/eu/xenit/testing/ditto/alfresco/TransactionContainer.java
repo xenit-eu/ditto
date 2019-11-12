@@ -36,9 +36,18 @@ public class TransactionContainer {
         return this.transactions.stream();
     }
 
-    public long getLastTxnId() {
-        Transaction lastTxn = this.transactions.getLast();
-        return (lastTxn != null) ? lastTxn.getId() : 0;
+
+    public Transaction getLastTransaction() {
+        return this.transactions.getLast();
     }
 
+    public Long getLastTxnId() {
+        Transaction lastTxn = this.getLastTransaction();
+        return (lastTxn == null) ? null : lastTxn.getId();
+    }
+
+    public Long getLastCommitTimeMs() {
+        Transaction lastTxn = this.getLastTransaction();
+        return (lastTxn == null) ? null : lastTxn.getCommitTimeMs();
+    }
 }
