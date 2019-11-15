@@ -1,4 +1,1 @@
 rootProject.name = 'ditto'
-
-include 'ditto-core'
-include 'ditto-solr-api-client'
