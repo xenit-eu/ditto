@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+sourceCompatibility = '1.8'
+
+dependencies {
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    implementation ("org.slf4j:slf4j-api:${slf4jVersion}") {
+        force = true
+        because 'guru.nidi:code-assert would pull in 1.8.0-beta2 in test-runtime-classpath'
+    }
+    runtimeOnly "org.slf4j:slf4j-simple:${slf4jVersion}"
+
+    testImplementation "org.assertj:assertj-core:${assertjVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    testImplementation "guru.nidi:code-assert:${codeAssertVersion}"
+
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    testRuntimeOnly "org.slf4j:slf4j-simple:${slf4jVersion}"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        jar(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            name = 'Xenit'
+            if (version.endsWith('SNAPSHOT')) {
+                url = 'https://artifactory.xenit.eu/artifactory/libs-snapshot-local'
+            } else {
+                url = 'https://artifactory.xenit.eu/artifactory/libs-release-local'
+            }
+
+            credentials {
+                username property("eu.xenit.artifactory.username")
+                password property("eu.xenit.artifactory.password")
+            }
+        }
+    }
+}

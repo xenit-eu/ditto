@@ -1,7 +1,9 @@
 .gradle
 
 /build
-/ditto-core/build
-/ditto-core/out
+/out
+
+/ditto/build
+/ditto/out
 
 *.iml
