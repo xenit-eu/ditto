@@ -21,7 +21,7 @@ public class FileSystemContentUrlProvider implements ContentUrlProviderSpi {
     }
 
 
-    public String createContentData(Node node, ContentContext context) {
+    public String createContentUrl(Node node, ContentContext context) {
 
         LocalDateTime dateTime = LocalDateTime.ofInstant(context.getInstant(), ZoneOffset.UTC);
 

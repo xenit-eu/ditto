@@ -14,26 +14,27 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DefaultTransactionView implements TransactionView {
 
-    private final Cursor cursor;
+    private final Cursor<Transaction> cursor;
 
     private final LinkedHashMap<Long, Transaction> txnBySeqId = new LinkedHashMap<>();
     private final LinkedHashMap<String, Transaction> txnByChangeId = new LinkedHashMap<>();
 
-    public DefaultTransactionView(Cursor cursor) {
+    public DefaultTransactionView(Cursor<Transaction> cursor) {
 
         this.cursor = cursor;
 
         this.process(this.cursor.getHead());
     }
 
-    private void process(RecordLogEntry head) {
+    private void process(RecordLogEntry<Transaction> head) {
 
+        // TODO
         // We need to walk the record-log from head back to the tail
         // The natural way to do this, would involve recursion: apply(entry) -> apply(parent)
         // Given that the JVM still lacks TCO (tail call optimisation), large'ish logs (10k records?)
-        // will run into stack-overlflow exceptions.
+        // will result into a stack overflow.
         // To avoid those very deep call stacks, converting the recursion into a loop with
-        // continuation-assing style should work.
+        // continuation-passing style should work.
         //
         // This technique is called 'trampolines' or 'trampolining'.
         //

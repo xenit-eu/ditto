@@ -17,8 +17,8 @@ public class RecordLog<TAggregate> {
     /**
      * Processes the stream, starting from an empty state and returns the head.
      *
-     * This head captures the last entry of the data stream and has a pointer to the previous entry.
-     * You can this of this like a series of version control commits, starting from scratch.
+     * This head captures the last entry of the data stream and has a pointer to the previous entry. You can this of
+     * this like a series of version control commits, starting from scratch.
      *
      * @param stream the stream of data to capture in the log
      * @return the head entry
@@ -30,8 +30,8 @@ public class RecordLog<TAggregate> {
     /**
      * Processes the stream on top of the given parent and returns the new head of the log.
      *
-     * This head captures the last entry of the data stream and has a pointer to the previous entry.
-     * You can this of this like a series of version control commits, starting from a given commit.
+     * This head captures the last entry of the data stream and has a pointer to the previous entry. You can this of
+     * this like a series of version control commits, starting from a given commit.
      *
      * @param parent the log entry where to apply the data stream on top of
      * @param stream the stream of data to capture in the log

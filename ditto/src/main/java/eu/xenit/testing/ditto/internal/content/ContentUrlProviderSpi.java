@@ -4,5 +4,5 @@ import eu.xenit.testing.ditto.api.Node;
 
 public interface ContentUrlProviderSpi {
 
-    String createContentData(Node node, ContentContext context);
+    String createContentUrl(Node node, ContentContext context);
 }

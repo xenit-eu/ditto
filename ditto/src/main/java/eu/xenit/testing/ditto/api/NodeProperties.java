@@ -10,28 +10,22 @@ public interface NodeProperties {
 
 
     int size();
-
     boolean isEmpty();
-
     boolean containsKey(String key);
 
     Serializable get(String key);
+    Serializable getOrDefault(String key, Serializable defaultValue);
 
     Serializable put(String s, Serializable value);
+    Serializable putIfAbsent(String key, Serializable value);
 
     Serializable remove(String key);
 
     Set<String> keySet();
-
     Collection<Serializable> values();
-
-    Serializable getOrDefault(String key, Serializable defaultValue);
 
     void forEach(BiConsumer<? super String, ? super Serializable> biConsumer);
 
-    Serializable putIfAbsent(String key, Serializable value);
-
-    Optional<String> getContentData();
-    Optional<String> getContentUrl();
+    Optional<ContentData> getContentData();
 
 }

@@ -7,25 +7,27 @@ import org.junit.jupiter.api.Test;
 
 class AlfrescoDataSetTest {
 
+    private AlfrescoDataSet dataSet = AlfrescoDataSet.builder(Instant.now())
+            .bootstrapAlfresco()
+            .skipToTransaction(12345L)
+            .addTransaction(txn -> {
+                txn.addDocument("foo.txt", doc -> {
+                    doc.content("foobar");
+                    NODEREF_FOO_TXT = doc.getNodeRef();
+                });
+            })
+            .build();
+
+    private NodeReference NODEREF_FOO_TXT;
+
     @Test
-    void basicIntegrationTest() {
-        AlfrescoDataSet dataSet = AlfrescoDataSet.builder(Instant.now())
-                .bootstrapAlfresco()
-                .skipToTransaction(12345L)
-                .addTransaction(txn -> {
-                    txn.addDocument("foo.txt");
-                })
-                .build();
-
-        assertThat(dataSet).isNotNull();
-
+    void checkTransactionViewBasics() {
         // Sanity check transaction-view
         assertThat(dataSet.getTransactionView())
                 .isNotNull()
                 .satisfies(txnView -> {
                     long lastTxnId = txnView.getLastTxnId();
                     assertThat(lastTxnId).isEqualTo(12345L);
-
                     assertThat(txnView.getTransactionById(lastTxnId))
                             .hasValueSatisfying(lastTxn -> {
                                 assertThat(lastTxn).isNotNull();
@@ -39,7 +41,9 @@ class AlfrescoDataSetTest {
                     assertThat(txnView.stream()).isNotNull().isNotEmpty()
                             .last().satisfies(txn -> assertThat(txn.getId()).isEqualTo(12345L));
                 });
-
+    }
+    @Test
+    void checkNodeViewBasics() {
         // Sanity check node-view
         assertThat(dataSet.getNodeView())
                 .as("%s should not be null", NodeView.class.getSimpleName())
@@ -49,7 +53,21 @@ class AlfrescoDataSetTest {
                             .filteredOn(node -> node.getName().equalsIgnoreCase("foo.txt"))
                             .hasSize(1);
                 });
+    }
 
+    @Test
+    void checkContentViewBasics() {
+        // Sanity check content-view
+        assertThat(dataSet.getContentView())
+                .as("%s should not be null", ContentView.class.getSimpleName())
+                .isNotNull()
+                .satisfies(contentView -> {
+                    assertThat(contentView.getContent(NODEREF_FOO_TXT))
+                            .isPresent()
+                            .hasValueSatisfying(stream -> {
+                                assertThat(stream).hasContent("foobar");
+                            });
+                });
     }
 
 }

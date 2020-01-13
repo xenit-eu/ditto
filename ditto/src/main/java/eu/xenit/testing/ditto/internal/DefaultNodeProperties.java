@@ -1,5 +1,6 @@
 package eu.xenit.testing.ditto.internal;
 
+import eu.xenit.testing.ditto.api.ContentData;
 import eu.xenit.testing.ditto.api.NodeProperties;
 import eu.xenit.testing.ditto.api.data.ContentModel.Content;
 import eu.xenit.testing.ditto.internal.content.ContentDataParser;
@@ -25,14 +26,8 @@ public class DefaultNodeProperties implements NodeProperties {
     }
 
     @Override
-    public Optional<String> getContentData() {
-        return Optional.ofNullable((String) this.get(Content.CONTENT));
-    }
-
-    @Override
-    public Optional<String> getContentUrl() {
-        return this.getContentData()
-                .map(data -> ContentDataParser.extractField(data, ContentDataField.CONTENT_URL));
+    public Optional<ContentData> getContentData() {
+        return Optional.ofNullable((ContentData) this.get(Content.CONTENT));
     }
 
     @Override

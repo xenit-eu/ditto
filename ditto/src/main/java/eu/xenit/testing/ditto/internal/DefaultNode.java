@@ -5,12 +5,14 @@ import static eu.xenit.testing.ditto.api.NodeReference.STOREREF_PROT_WORKSPACE;
 
 import eu.xenit.testing.ditto.api.Node;
 import eu.xenit.testing.ditto.api.NodeCustomizer;
+import eu.xenit.testing.ditto.api.NodeProperties;
 import eu.xenit.testing.ditto.api.NodeReference;
 import eu.xenit.testing.ditto.api.data.ContentModel.Content;
+import eu.xenit.testing.ditto.internal.DefaultTransaction.TransactionContext;
 import eu.xenit.testing.ditto.internal.content.ContentContext;
 import eu.xenit.testing.ditto.internal.content.ContentUrlProviderSpi;
-import eu.xenit.testing.ditto.internal.DefaultTransaction.TransactionContext;
 import eu.xenit.testing.ditto.util.MimeTypes;
+import eu.xenit.testing.ditto.util.StringUtils;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -18,6 +20,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +29,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 import lombok.AccessLevel;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -45,25 +49,10 @@ public class DefaultNode implements Node {
     private final String type;
 
     @Getter
-    private final DefaultNodeProperties properties;
+    private final NodeProperties properties;
 
     @Getter
     private final Set<String> aspects;
-
-    @Getter(AccessLevel.PACKAGE)
-    private boolean isDocument;
-
-    // move state to node-context and encode this in cm:content ?
-    private String mimetype;
-
-    // move state to node-context and encode this in cm:content ?
-    @Getter
-    private long size;
-
-    // TODO we should hide this, it only contains something if the
-    // content is specified and not auto-generated
-    @Getter
-    private final byte[] content;
 
     private static NodeInitializer init = new NodeInitializer();
 
@@ -74,26 +63,11 @@ public class DefaultNode implements Node {
         this.properties = new DefaultNodeProperties(builder.properties);
         this.aspects = new HashSet<>(builder.aspects);
 
-        this.isDocument = builder.isDocument;
-        this.mimetype = builder.mimetype;
-        this.size = builder.size;
-
-        this.content = builder.content;
-
         init.accept(this, builder.context);
     }
 
     public static NodeBuilder builder(TransactionContext context) {
         return new NodeBuilder(context);
-    }
-
-    @Override
-    public String getMimeType() {
-        // should we get this from the content-property ?
-        return this.mimetype != null
-                ? this.mimetype
-                : MimeTypes.APPLICATION_OCTET_STREAM;
-
     }
 
     @Override
@@ -105,11 +79,13 @@ public class DefaultNode implements Node {
 
         private final TransactionContext txnContext;
 
+        @Getter(AccessLevel.PACKAGE)
+        private final Map<String, ContentDataBuilder> contentDataMap = new LinkedHashMap<>();
+
         @Getter
         private final Instant instant;
 
-        private NodeContext (TransactionContext txnContext)
-        {
+        private NodeContext(TransactionContext txnContext) {
             this.txnContext = txnContext;
             this.instant = txnContext.now();
         }
@@ -123,9 +99,42 @@ public class DefaultNode implements Node {
                     : this.txnContext.getContentUrlProvider();
         }
 
+        ContentDataBuilder getContentData(boolean createIfAbsent) {
+            return this.getContentDataByName(Content.CONTENT, createIfAbsent);
+        }
+
+        ContentDataBuilder getContentDataByName(String propertyName, boolean createIfAbsent) {
+            Objects.requireNonNull(propertyName, "Argument 'propertyName' is required");
+
+            if (createIfAbsent) {
+                return this.contentDataMap.computeIfAbsent(propertyName, (String key) -> new ContentDataBuilder());
+            }
+
+            return this.contentDataMap.get(propertyName);
+        }
+
+
         public void createNamedReference(String name, Node node) {
             this.txnContext.createNamedReference(name, node);
         }
+    }
+
+    @Data
+    @Accessors(fluent = true)
+    static class ContentDataBuilder {
+
+        private byte[] data;
+        private String contentUrl;
+        private String mimetype = MimeTypes.APPLICATION_OCTET_STREAM;
+        private long size;
+
+        private String encoding;
+        private String locale;
+
+        public Charset getEncodingOrDefault() {
+            return StringUtils.hasText(encoding) ? Charset.forName(this.encoding) : Charset.defaultCharset();
+        }
+
     }
 
     public static class NodeBuilder implements NodeCustomizer {
@@ -165,39 +174,6 @@ public class DefaultNode implements Node {
         @Accessors(fluent = true, chain = true)
         private String uuid = UUID.randomUUID().toString();
 
-
-        @Getter
-        @Setter
-        @Accessors(fluent = true, chain = true)
-        private boolean isDocument = false;
-
-        @Getter
-        @Accessors(fluent = true)
-        private String mimetype = MimeTypes.APPLICATION_OCTET_STREAM;
-
-        @Override
-        public NodeBuilder mimetype(String mimetype)
-        {
-            this.mimetype = mimetype;
-            this.isDocument = true;
-            return this;
-        }
-
-        @Getter
-        @Accessors(fluent = true)
-        private long size = -1;
-
-        @Override
-        public NodeBuilder size(long size)
-        {
-            if (size < 0) {
-                throw new IllegalArgumentException("Argument 'size' should be > 0");
-            }
-            this.size = size;
-            this.isDocument = true;
-            return this;
-        }
-
         @Override
         public NodeReference getNodeRef() {
             return new NodeReference(this.storeRefProtocol, this.storeRefIdentifier, this.uuid);
@@ -210,10 +186,6 @@ public class DefaultNode implements Node {
 
         @Getter
         private Map<String, Serializable> properties = new HashMap<>();
-
-        @Getter
-        @Accessors(fluent = true)
-        private byte[] content;
 
         @Getter
         @Setter
@@ -239,29 +211,44 @@ public class DefaultNode implements Node {
 
 
         @Override
-        public NodeBuilder aspects(Set<String> aspects)
-        {
+        public NodeBuilder aspects(Set<String> aspects) {
             Objects.requireNonNull(aspects, "Argument 'aspects' is required");
             this.aspects.forEach(this::aspect);
             return this;
         }
 
         @Override
-        public NodeBuilder aspect(String aspect)
-        {
+        public NodeBuilder aspect(String aspect) {
             Objects.requireNonNull(aspect, "Argument 'aspect' is required");
             this.aspects.add(aspect);
             return this;
         }
 
         @Override
-        public NodeBuilder name(String name)
-        {
+        public NodeBuilder name(String name) {
             Objects.requireNonNull(name, "Argument 'name' is required");
             this.property(Content.NAME, name);
             return this;
         }
 
+        public boolean isDocument() {
+            return !this.context.getContentDataMap().isEmpty();
+        }
+
+        public NodeBuilder isDocument(boolean isDoc) {
+            if (isDoc == !this.context.getContentDataMap().isEmpty()) {
+                return this;
+            }
+
+            if (isDoc) {
+                // Creating a default content property
+                this.context.getContentData(true);
+            } else {
+                // Clearing all content properties
+                this.context.getContentDataMap().clear();
+            }
+            return this;
+        }
 
         @Override
         public NodeBuilder content(String content) {
@@ -276,11 +263,43 @@ public class DefaultNode implements Node {
 
         @Override
         public NodeBuilder content(byte[] content) {
-            this.content = content;
+            ContentDataBuilder contentBuilder = this.context.getContentData(true);
+            contentBuilder.data(content);
+            return this;
+        }
+
+        @Override
+        public byte[] content() {
+            ContentDataBuilder contentData = this.context.getContentData(false);
+            return (contentData == null) ? null : contentData.data();
+        }
+
+        @Override
+        public String mimetype() {
+            ContentDataBuilder contentData = this.context.getContentData(false);
+            return (contentData == null) ? null : contentData.mimetype();
+        }
+
+        @Override
+        public NodeBuilder mimetype(String mimetype) {
+            this.context.getContentData(true).mimetype(mimetype);
+            return this;
+        }
+
+        @Override
+        public long size() {
+            ContentDataBuilder contentData = this.context.getContentData(false);
+            return (contentData == null) ? -1 : contentData.size();
+        }
+
+        @Override
+        public NodeBuilder size(long size) {
+            this.context.getContentData(true).size(size);
             return this;
         }
 
         private List<Consumer<Node>> callbacks = new ArrayList<>();
+
         @Override
         public NodeBuilder callback(Consumer<Node> callback) {
             this.callbacks.add(callback);
@@ -297,6 +316,4 @@ public class DefaultNode implements Node {
             return this.callback(node -> this.context.createNamedReference(node.getName(), node));
         }
     }
-
-
 }

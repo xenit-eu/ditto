@@ -1,13 +1,20 @@
 package eu.xenit.testing.ditto.internal;
 
 
+import eu.xenit.testing.ditto.api.ContentData;
 import eu.xenit.testing.ditto.api.data.ContentModel.Content;
 import eu.xenit.testing.ditto.api.data.ContentModel.System;
 import eu.xenit.testing.ditto.internal.DefaultNode.NodeContext;
 import eu.xenit.testing.ditto.internal.content.ContentUrlProviderSpi;
+import eu.xenit.testing.ditto.internal.content.DefaultContentData;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Supplier;
 
 public class NodeInitializer {
 
@@ -44,16 +51,12 @@ public class NodeInitializer {
     }
 
     /**
-     * Initialize auditable aspects & properties for a node.
-     * Given that dictionary-model type inheritance is not yet supported here,
-     * we fall back to a blacklist of types where we should NOT inject auditable props
-     *
-     * @param node
+     * Initialize auditable aspects & properties for a node. Given that dictionary-model type inheritance is not yet
+     * supported here, we fall back to a blacklist of types where we should NOT inject auditable props
      */
     private void setAuditableAspectAndProps(DefaultNode node, NodeContext context) {
 
-        if (auditableBlackListTypes.contains(node.getType()))
-        {
+        if (auditableBlackListTypes.contains(node.getType())) {
             return;
         }
 
@@ -66,22 +69,45 @@ public class NodeInitializer {
     }
 
     private void setContentData(DefaultNode node, NodeContext context) {
-        if (!node.isDocument()) {
+        if (context.getContentDataMap().isEmpty()) {
             return;
         }
 
-        ContentUrlProviderSpi contentUrlProvider = context.getContentUrlProvider();
-        String contentUrl = contentUrlProvider.createContentData(node, context);
+        context.getContentDataMap().forEach((key, builder) -> {
+            ContentUrlProviderSpi contentUrlProvider = context.getContentUrlProvider();
+            String contentUrl = contentUrlProvider.createContentUrl(node, context);
 
-        String contentData = String.format("contentUrl=%s|mimetype=%s|size=%s|encoding=%s|locale=%s|id=%s",
-                contentUrl,
-                node.getMimeType(),
-                node.getSize(),
-                "TODO-ENCODING",
-                "TODO-LOCALE",
-                "TODO-ID");
+            // TODO what about contentId ?!
 
-        node.getProperties().putIfAbsent(Content.CONTENT, contentData);
+            Supplier<InputStream> contentDelegate;
+            if (builder.data() != null) {
+                // The builder provided the content
+                contentDelegate = () -> new ByteArrayInputStream(builder.data());
+            } else {
+                // Hooking up some fake data generator, using the node-id as a random seed
+                // This means content should be "random", but stable
+                long seed = node.getNodeId();
+                contentDelegate = () -> {
+                    String fakeContent = "foo with seed: '"+ seed + "'";
+                    Charset encoding = builder.getEncodingOrDefault();
+                    return new ByteArrayInputStream(fakeContent.getBytes(encoding));
+                };
+            }
+
+            // Create content-data
+            ContentData contentData = new DefaultContentData(contentDelegate,
+                    contentUrl, builder.mimetype(), builder.size(),
+                    builder.getEncodingOrDefault().name(), builder.locale());
+
+            // Save it in the node properties
+            Serializable old = node.getProperties().putIfAbsent(key, contentData);
+
+            //.sanity check
+            if (old != null) {
+                String conflictExMsg = String.format("Conflict: property '%s' already exists: %s", key, old);
+                throw new UnsupportedOperationException(conflictExMsg);
+            }
+        });
     }
 
 }

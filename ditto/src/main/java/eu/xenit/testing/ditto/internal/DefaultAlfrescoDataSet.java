@@ -1,6 +1,7 @@
 package eu.xenit.testing.ditto.internal;
 
 import eu.xenit.testing.ditto.api.AlfrescoDataSet;
+import eu.xenit.testing.ditto.api.ContentView;
 import eu.xenit.testing.ditto.api.Node;
 import eu.xenit.testing.ditto.api.NodeView;
 import eu.xenit.testing.ditto.api.Transaction;
@@ -20,6 +21,9 @@ public class DefaultAlfrescoDataSet implements AlfrescoDataSet {
     @Getter
     public NodeView nodeView;
 
+    @Getter
+    public ContentView contentView;
+
     private Cursor<Transaction> cursor;
 
     private final Map<String, Node> namedReferences;
@@ -32,6 +36,7 @@ public class DefaultAlfrescoDataSet implements AlfrescoDataSet {
         this.cursor = new Cursor<>(txnLog, head);
         this.transactionView = new DefaultTransactionView(this.cursor);
         this.nodeView = new DefaultNodeView(this.cursor);
+        this.contentView = new DefaultContentView(this.cursor);
 
         this.namedReferences = new HashMap<>(builder.getContext().getNamedReferences());
     }

@@ -30,6 +30,7 @@ public interface AlfrescoDataSet {
 
     TransactionView getTransactionView();
     NodeView getNodeView();
+    ContentView getContentView();
 
 
 

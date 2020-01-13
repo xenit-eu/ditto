@@ -44,7 +44,7 @@ public class DefaultNodeView implements NodeView {
     }
 
     private void process(Transaction txn) {
-        log.debug("Replaying {} - with {} writes and {} deletes", txn, txn.getUpdated(), txn.getDeleted());
+        log.debug("Replaying {} - with {} writes and {} deletes", txn, txn.getUpdated().size(), txn.getDeleted().size());
 
         txn.getUpdated().forEach(this::add);
         txn.getDeleted().forEach(this::delete);

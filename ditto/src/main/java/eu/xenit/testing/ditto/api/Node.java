@@ -1,22 +1,16 @@
 package eu.xenit.testing.ditto.api;
 
+import java.util.Set;
+
 public interface Node {
 
-    String getMimeType();
+    long getNodeId();
+    NodeReference getNodeRef();
+    String getType();
 
     String getName();
 
-    long getNodeId();
-
-    NodeReference getNodeRef();
-
-    String getType();
-
     NodeProperties getProperties();
+    Set<String> getAspects();
 
-    java.util.Set<String> getAspects();
-
-    long getSize();
-
-    byte[] getContent();
 }
