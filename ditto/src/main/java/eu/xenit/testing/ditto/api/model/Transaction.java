@@ -1,5 +1,7 @@
 package eu.xenit.testing.ditto.api.model;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -54,7 +56,7 @@ public interface Transaction {
             return transaction -> transaction.getCommitTimeMs() < toCommitTime;
         }
 
-        static Predicate<Transaction> containedIn(Set<Long> txnIds)
+        static Predicate<Transaction> containedIn(Collection<Long> txnIds)
         {
             if (txnIds == null) {
                 return always(true);
@@ -64,7 +66,8 @@ public interface Transaction {
                 return always(false);
             }
 
-            return (txn) -> txnIds.contains(txn.getId());
+            HashSet<Long> set = new HashSet<>(txnIds);
+            return (txn) -> set.contains(txn.getId());
         }
     }
 }
