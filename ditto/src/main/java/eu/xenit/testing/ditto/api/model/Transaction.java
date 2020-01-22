@@ -64,7 +64,7 @@ public interface Transaction {
                 return always(false);
             }
 
-            return txnIds::contains;
+            return (txn) -> txnIds.contains(txn.getId());
         }
     }
 }
