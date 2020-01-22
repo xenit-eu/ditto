@@ -1,6 +1,5 @@
-package eu.xenit.testing.ditto.api;
+package eu.xenit.testing.ditto.api.model;
 
-import eu.xenit.testing.ditto.api.model.Node;
 import java.util.Set;
 import java.util.function.Predicate;
 

@@ -4,7 +4,7 @@ import eu.xenit.testing.ditto.api.AlfrescoDataSet;
 import eu.xenit.testing.ditto.api.ContentView;
 import eu.xenit.testing.ditto.api.model.Node;
 import eu.xenit.testing.ditto.api.NodeView;
-import eu.xenit.testing.ditto.api.Transaction;
+import eu.xenit.testing.ditto.api.model.Transaction;
 import eu.xenit.testing.ditto.api.TransactionView;
 import eu.xenit.testing.ditto.internal.mvcc.Cursor;
 import eu.xenit.testing.ditto.internal.mvcc.RecordLog;

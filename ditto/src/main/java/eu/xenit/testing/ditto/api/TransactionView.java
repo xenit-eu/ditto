@@ -1,5 +1,6 @@
 package eu.xenit.testing.ditto.api;
 
+import eu.xenit.testing.ditto.api.model.Transaction;
 import java.util.Optional;
 import java.util.stream.Stream;
 

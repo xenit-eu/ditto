@@ -4,7 +4,7 @@ import eu.xenit.testing.ditto.api.model.ContentData;
 import eu.xenit.testing.ditto.api.ContentView;
 import eu.xenit.testing.ditto.api.model.Node;
 import eu.xenit.testing.ditto.api.model.NodeReference;
-import eu.xenit.testing.ditto.api.Transaction;
+import eu.xenit.testing.ditto.api.model.Transaction;
 import eu.xenit.testing.ditto.api.data.ContentModel.Content;
 import eu.xenit.testing.ditto.api.model.QName;
 import eu.xenit.testing.ditto.internal.content.InternalContentData;

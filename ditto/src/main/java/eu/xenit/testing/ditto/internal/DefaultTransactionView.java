@@ -1,6 +1,6 @@
 package eu.xenit.testing.ditto.internal;
 
-import eu.xenit.testing.ditto.api.Transaction;
+import eu.xenit.testing.ditto.api.model.Transaction;
 import eu.xenit.testing.ditto.api.TransactionView;
 import eu.xenit.testing.ditto.internal.mvcc.Cursor;
 import eu.xenit.testing.ditto.internal.mvcc.RecordLogEntry;

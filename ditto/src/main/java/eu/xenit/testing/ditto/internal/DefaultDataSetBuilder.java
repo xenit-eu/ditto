@@ -4,7 +4,7 @@ import eu.xenit.testing.ditto.api.AlfrescoDataSet;
 import eu.xenit.testing.ditto.api.BootstrapConfiguration;
 import eu.xenit.testing.ditto.api.BuilderConfigurer;
 import eu.xenit.testing.ditto.api.DataSetBuilder;
-import eu.xenit.testing.ditto.api.Transaction;
+import eu.xenit.testing.ditto.api.model.Transaction;
 import eu.xenit.testing.ditto.api.TransactionCustomizer;
 import eu.xenit.testing.ditto.internal.DefaultTransaction.TransactionBuilder;
 import java.util.LinkedList;
