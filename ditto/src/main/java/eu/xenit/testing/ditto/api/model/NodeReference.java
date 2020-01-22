@@ -1,5 +1,6 @@
 package eu.xenit.testing.ditto.api.model;
 
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -43,6 +44,10 @@ public class NodeReference {
                 storeRef.substring(dividerPatternPosition + 3),
                 nodeRef.substring(lastForwardSlash + 1)
         );
+    }
+
+    public static NodeReference newNodeRef() {
+        return new NodeReference(STOREREF_PROT_WORKSPACE, STOREREF_ID_SPACESSTORE, UUID.randomUUID().toString());
     }
 
     @Override
