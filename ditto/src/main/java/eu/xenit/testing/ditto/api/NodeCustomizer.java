@@ -39,8 +39,10 @@ public interface NodeCustomizer {
 
     NodeCustomizer createNamedReference();
 
+    String storeRefProtocol();
     NodeCustomizer storeRefProtocol(String storeRefProtocol);
 
+    String storeRefIdentifier();
     NodeCustomizer storeRefIdentifier(String storeRefIdentifier);
 
     NodeCustomizer uuid(String uuid);
@@ -55,9 +57,9 @@ public interface NodeCustomizer {
 
     long nodeId();
 
-    String storeRefProtocol();
 
-    String storeRefIdentifier();
+
+
 
     String uuid();
 

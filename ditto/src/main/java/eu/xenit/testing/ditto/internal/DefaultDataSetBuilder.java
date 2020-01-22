@@ -6,7 +6,6 @@ import eu.xenit.testing.ditto.api.BuilderConfigurer;
 import eu.xenit.testing.ditto.api.DataSetBuilder;
 import eu.xenit.testing.ditto.api.Transaction;
 import eu.xenit.testing.ditto.api.TransactionCustomizer;
-import eu.xenit.testing.ditto.api.data.ContentModel.System;
 import eu.xenit.testing.ditto.internal.DefaultTransaction.TransactionBuilder;
 import java.util.LinkedList;
 import java.util.function.Consumer;

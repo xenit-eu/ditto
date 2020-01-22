@@ -30,6 +30,7 @@ public interface ContentModel {
         Namespace NAMESPACE = Namespace.createNamespace("http://www.alfresco.org/model/system/1.0", "sys");
 
         QName STORE_ROOT = createQName("store_root");
+        QName CONTAINER = createQName("container");
 
         QName NODE_DBID = createQName("node-dbid");
 
@@ -38,6 +39,17 @@ public interface ContentModel {
         QName NODE_UUID = createQName("node-uuid");
 
         QName LOCALE = createQName("locale");
+
+        static QName createQName(String localName) {
+            return QName.createQName(NAMESPACE, localName);
+        }
+    }
+
+    interface User {
+        Namespace NAMESPACE = Namespace.createNamespace("http://www.alfresco.org/model/user/1.0", "usr");
+
+        QName USER = createQName("user");
+        QName USERNAME = createQName("username");
 
         static QName createQName(String localName) {
             return QName.createQName(NAMESPACE, localName);
