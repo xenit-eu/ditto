@@ -14,7 +14,6 @@ class DefaultTransactionTest {
     @Test
     void testTransactionUpdatesKeepsInsertionOrder() {
         RootContext root = mock(RootContext.class);
-        when(root.nextNodeId()).thenReturn(10L);
         when(root.now()).thenReturn(Instant.now());
 
         DefaultTransaction txn = DefaultTransaction.builder(root)
