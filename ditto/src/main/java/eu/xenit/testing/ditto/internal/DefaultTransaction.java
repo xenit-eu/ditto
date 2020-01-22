@@ -17,6 +17,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -41,8 +42,8 @@ public class DefaultTransaction implements Transaction {
         this.changeId = builder.changeId;
         this.commitTimeMs = builder.commitTimeMs;
 
-        this.updated = new HashSet<>(builder.updated.values());
-        this.deleted = new HashSet<>(builder.deleted.values());
+        this.updated = new LinkedHashSet<>(builder.updated.values());
+        this.deleted = new LinkedHashSet<>(builder.deleted.values());
 
     }
 
