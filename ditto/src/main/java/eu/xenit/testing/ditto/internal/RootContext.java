@@ -1,6 +1,8 @@
 package eu.xenit.testing.ditto.internal;
 
-import eu.xenit.testing.ditto.api.Node;
+import eu.xenit.testing.ditto.api.BootstrapConfiguration;
+import eu.xenit.testing.ditto.api.model.Node;
+import eu.xenit.testing.ditto.api.model.QName;
 import eu.xenit.testing.ditto.internal.content.ContentUrlProviderSpi;
 import eu.xenit.testing.ditto.internal.content.FileSystemContentUrlProvider;
 import java.time.Clock;
@@ -13,8 +15,9 @@ import lombok.Getter;
 
 public class RootContext {
 
-
     private final Clock clock;
+    private final DictionaryService dictionary = new DictionaryService();
+
     private long nextTxnId = 1;
     private long nextNodeId = 1;
 
@@ -23,12 +26,15 @@ public class RootContext {
     private ContentUrlProviderSpi contentUrlProvider = null;
     private static final ContentUrlProviderSpi DEFAULT_CONTENTURLPROVIDER = new FileSystemContentUrlProvider();
 
-    RootContext(Instant bootstrapInstant)
+    RootContext(BootstrapConfiguration bootstrapConfig)
     {
-        Objects.requireNonNull(bootstrapInstant, "Argument 'bootstrapInstant' is required");
+        Objects.requireNonNull(bootstrapConfig, "Argument 'bootstrapConfig' is required");
 
-        this.bootstrapInstant = bootstrapInstant;
+        this.bootstrapInstant = bootstrapConfig.getBootstrapInstant();
         this.clock =  Clock.fixed(bootstrapInstant, ZoneId.of("UTC"));
+
+
+        bootstrapConfig.getNamespaces().forEach(this.dictionary::registerNamespace);
     }
 
     long nextTxnId() {
@@ -93,5 +99,9 @@ public class RootContext {
 
     void createNamedReference(String name, Node node) {
         this.namedReferences.put(name, node);
+    }
+
+    public QName resolveQName(String qname) {
+        return this.dictionary.resolveQName(qname);
     }
 }

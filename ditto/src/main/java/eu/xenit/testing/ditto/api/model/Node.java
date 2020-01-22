@@ -1,4 +1,4 @@
-package eu.xenit.testing.ditto.api;
+package eu.xenit.testing.ditto.api.model;
 
 import java.util.Set;
 
@@ -6,11 +6,11 @@ public interface Node {
 
     long getNodeId();
     NodeReference getNodeRef();
-    String getType();
+    QName getType();
 
     String getName();
 
     NodeProperties getProperties();
-    Set<String> getAspects();
+    Set<QName> getAspects();
 
 }

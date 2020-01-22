@@ -1,11 +1,11 @@
 package eu.xenit.testing.ditto.internal;
 
-import eu.xenit.testing.ditto.api.BuilderConfigurer;
 import eu.xenit.testing.ditto.api.NodeCustomizer;
 import eu.xenit.testing.ditto.api.content.SwarmContentServiceCustomizer;
+import eu.xenit.testing.ditto.api.model.QName;
 import eu.xenit.testing.ditto.internal.content.ContentUrlProviderSpi;
-import eu.xenit.testing.ditto.api.Node;
-import eu.xenit.testing.ditto.api.NodeReference;
+import eu.xenit.testing.ditto.api.model.Node;
+import eu.xenit.testing.ditto.api.model.NodeReference;
 import eu.xenit.testing.ditto.api.Transaction;
 import eu.xenit.testing.ditto.api.TransactionCustomizer;
 import eu.xenit.testing.ditto.api.data.ContentModel;
@@ -85,6 +85,10 @@ public class DefaultTransaction implements Transaction {
 
         public void createNamedReference(String name, Node node) {
             this.rootContext.createNamedReference(name, node);
+        }
+
+        public QName resolveQName(String qname) {
+            return this.rootContext.resolveQName(qname);
         }
     }
 

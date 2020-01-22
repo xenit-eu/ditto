@@ -2,18 +2,19 @@ package eu.xenit.testing.ditto.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import eu.xenit.testing.ditto.api.model.NodeReference;
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
 
 class AlfrescoDataSetTest {
 
-    private AlfrescoDataSet dataSet = AlfrescoDataSet.builder(Instant.now())
-            .bootstrapAlfresco()
+    private AlfrescoDataSet dataSet = AlfrescoDataSet.bootstrapAlfresco()
             .skipToTransaction(12345L)
             .addTransaction(txn -> {
                 txn.addDocument("foo.txt", doc -> {
                     doc.content("foobar");
-                    NODEREF_FOO_TXT = doc.getNodeRef();
+                    doc.property("cm:description", "Test description");
+                    NODEREF_FOO_TXT = doc.nodeRef();
                 });
             })
             .build();

@@ -38,6 +38,7 @@ class DependencyTest {
 
                 // api may use all subpackages
                 api.mayUse(api.allSubOf());
+                api.sub("model").mayBeUsedBy(api.allSubOf());
 
                 // .internal may use all subpackages
                 internal.mayUse(internal.allSubOf());

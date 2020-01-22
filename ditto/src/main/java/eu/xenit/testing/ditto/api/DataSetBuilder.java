@@ -10,8 +10,6 @@ public interface DataSetBuilder {
 
     DataSetBuilder configure(Consumer<BuilderConfigurer> configurer);
 
-    DataSetBuilder bootstrapAlfresco();
-
     AlfrescoDataSet build();
 
 }

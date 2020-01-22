@@ -1,4 +1,4 @@
-package eu.xenit.testing.ditto.api;
+package eu.xenit.testing.ditto.api.model;
 
 import java.io.Serializable;
 

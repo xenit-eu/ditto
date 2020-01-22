@@ -1,6 +1,9 @@
 package eu.xenit.testing.ditto.api;
 
+import eu.xenit.testing.ditto.api.data.ContentModel.System;
+import eu.xenit.testing.ditto.api.model.Node;
 import java.time.Instant;
+import java.util.function.Consumer;
 
 public interface AlfrescoDataSet {
 
@@ -13,13 +16,32 @@ public interface AlfrescoDataSet {
      */
     static DataSetBuilder builder(Instant bootstrapInstant) {
         DataSetBuilderFactory factory = DataSetBuilderProvider.getInstance().getFactory();
-        BootstrapConfiguration config = BootstrapConfiguration.withBootstrapInstant(bootstrapInstant);
+        BootstrapConfiguration config = BootstrapConfiguration
+                .withBootstrapInstant(bootstrapInstant);
 
         return factory.createBuilder(config);
     }
 
     static DataSetBuilder builder() {
         return builder(Instant.now());
+    }
+
+    static DataSetBuilder bootstrapAlfresco() {
+        return bootstrapAlfresco(Instant.now());
+    }
+
+    static DataSetBuilder bootstrapAlfresco(Instant bootstrapInstant) {
+        return bootstrapAlfresco(bootstrapInstant, (config) -> {});
+    }
+
+    static DataSetBuilder bootstrapAlfresco(Instant bootstrapInstant, Consumer<BootstrapConfiguration> callback) {
+        DataSetBuilderFactory factory = DataSetBuilderProvider.getInstance().getFactory();
+        BootstrapConfiguration config = BootstrapConfiguration.withBootstrapInstant(bootstrapInstant);
+        AlfrescoBootstrapper.configureBootstrap(config);
+        callback.accept(config);
+
+        DataSetBuilder builder = factory.createBuilder(config);
+        return AlfrescoBootstrapper.bootstrap(builder);
     }
 
     static AlfrescoDataSet empty() {

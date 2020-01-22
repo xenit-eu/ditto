@@ -1,11 +1,12 @@
 package eu.xenit.testing.ditto.internal;
 
-import eu.xenit.testing.ditto.api.ContentData;
+import eu.xenit.testing.ditto.api.model.ContentData;
 import eu.xenit.testing.ditto.api.ContentView;
-import eu.xenit.testing.ditto.api.Node;
-import eu.xenit.testing.ditto.api.NodeReference;
+import eu.xenit.testing.ditto.api.model.Node;
+import eu.xenit.testing.ditto.api.model.NodeReference;
 import eu.xenit.testing.ditto.api.Transaction;
 import eu.xenit.testing.ditto.api.data.ContentModel.Content;
+import eu.xenit.testing.ditto.api.model.QName;
 import eu.xenit.testing.ditto.internal.content.InternalContentData;
 import eu.xenit.testing.ditto.internal.mvcc.Cursor;
 import eu.xenit.testing.ditto.internal.mvcc.RecordLogEntry;
@@ -23,7 +24,7 @@ public class DefaultContentView implements ContentView {
 
 //    private final HashMap<String, AnnotatedContentData> contentUrlMap = new LinkedHashMap<>();
     private final HashMap<String, InternalContentData> contentUrlMap = new LinkedHashMap<>();
-    private final HashMap<NodeReference, Map<String, InternalContentData>> contentNodeMap = new LinkedHashMap<>();
+    private final HashMap<NodeReference, Map<QName, InternalContentData>> contentNodeMap = new LinkedHashMap<>();
 
     public DefaultContentView(Cursor<Transaction> cursor) {
 
@@ -53,8 +54,8 @@ public class DefaultContentView implements ContentView {
 
 
     @Override
-    public Optional<InputStream> getContent(NodeReference nodeRef, String property) {
-        Map<String, InternalContentData> contentDataMap = this.contentNodeMap.get(nodeRef);
+    public Optional<InputStream> getContent(NodeReference nodeRef, QName property) {
+        Map<QName, InternalContentData> contentDataMap = this.contentNodeMap.get(nodeRef);
         if (contentDataMap == null) {
             return Optional.empty();
         }
@@ -107,7 +108,7 @@ public class DefaultContentView implements ContentView {
                 }
 
                 // update the content-node-map
-                Map<String, InternalContentData> nodeContentDataMap = this.contentNodeMap
+                Map<QName, InternalContentData> nodeContentDataMap = this.contentNodeMap
                         .computeIfAbsent(node.getNodeRef(), (nodeRef) -> new HashMap<>());
                 InternalContentData oldContent = nodeContentDataMap.putIfAbsent(key, contentData);
                 if (oldContent != null) {

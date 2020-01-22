@@ -1,9 +1,10 @@
 package eu.xenit.testing.ditto.internal;
 
 
-import eu.xenit.testing.ditto.api.ContentData;
+import eu.xenit.testing.ditto.api.model.ContentData;
 import eu.xenit.testing.ditto.api.data.ContentModel.Content;
 import eu.xenit.testing.ditto.api.data.ContentModel.System;
+import eu.xenit.testing.ditto.api.model.QName;
 import eu.xenit.testing.ditto.internal.DefaultNode.NodeContext;
 import eu.xenit.testing.ditto.internal.content.ContentUrlProviderSpi;
 import eu.xenit.testing.ditto.internal.content.DefaultContentData;
@@ -19,7 +20,7 @@ import java.util.function.Supplier;
 public class NodeInitializer {
 
 
-    private final Set<String> auditableBlackListTypes = new HashSet<>(Collections.singletonList(System.STORE_ROOT));
+    private final Set<QName> auditableBlackListTypes = new HashSet<>(Collections.singletonList(System.STORE_ROOT));
     private final String DEFAULT_LOCALE = "en_US";
 
     public void accept(DefaultNode node, NodeContext context) {

@@ -1,10 +1,9 @@
 package eu.xenit.testing.ditto.internal;
 
-import eu.xenit.testing.ditto.api.ContentData;
-import eu.xenit.testing.ditto.api.NodeProperties;
+import eu.xenit.testing.ditto.api.model.ContentData;
+import eu.xenit.testing.ditto.api.model.NodeProperties;
 import eu.xenit.testing.ditto.api.data.ContentModel.Content;
-import eu.xenit.testing.ditto.internal.content.ContentDataParser;
-import eu.xenit.testing.ditto.internal.content.ContentDataParser.ContentDataField;
+import eu.xenit.testing.ditto.api.model.QName;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -15,13 +14,13 @@ import java.util.function.BiConsumer;
 
 public class DefaultNodeProperties implements NodeProperties {
 
-    private final Map<String, Serializable> properties = new LinkedHashMap<>();
+    private final Map<QName, Serializable> properties = new LinkedHashMap<>();
 
     public DefaultNodeProperties() {
 
     }
 
-    public DefaultNodeProperties(Map<String, Serializable> properties) {
+    public DefaultNodeProperties(Map<QName, Serializable> properties) {
         this.properties.putAll(properties);
     }
 
@@ -41,27 +40,27 @@ public class DefaultNodeProperties implements NodeProperties {
     }
 
     @Override
-    public boolean containsKey(String key) {
+    public boolean containsKey(QName key) {
         return this.properties.containsKey(key);
     }
 
     @Override
-    public Serializable get(String key) {
+    public Serializable get(QName key) {
         return this.properties.get(key);
     }
 
     @Override
-    public Serializable put(String s, Serializable value) {
+    public Serializable put(QName s, Serializable value) {
         return this.properties.put(s, value);
     }
 
     @Override
-    public Serializable remove(String key) {
+    public Serializable remove(QName key) {
         return this.properties.remove(key);
     }
 
     @Override
-    public Set<String> keySet() {
+    public Set<QName> keySet() {
         return this.properties.keySet();
     }
 
@@ -71,17 +70,17 @@ public class DefaultNodeProperties implements NodeProperties {
     }
 
     @Override
-    public Serializable getOrDefault(String key, Serializable defaultValue) {
+    public Serializable getOrDefault(QName key, Serializable defaultValue) {
         return this.properties.getOrDefault(key, defaultValue);
     }
 
     @Override
-    public void forEach(BiConsumer<? super String, ? super Serializable> biConsumer) {
+    public void forEach(BiConsumer<? super QName, ? super Serializable> biConsumer) {
         this.properties.forEach(biConsumer);
     }
 
     @Override
-    public Serializable putIfAbsent(String key, Serializable value) {
+    public Serializable putIfAbsent(QName key, Serializable value) {
         return this.properties.putIfAbsent(key, value);
     }
 }

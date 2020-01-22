@@ -1,35 +1,47 @@
 package eu.xenit.testing.ditto.api.data;
 
+import eu.xenit.testing.ditto.api.model.Namespace;
+import eu.xenit.testing.ditto.api.model.QName;
+
 public interface ContentModel {
 
     interface Content {
 
-        String FOLDER = "{http://www.alfresco.org/model/content/1.0}folder";
-        String CONTENT = "{http://www.alfresco.org/model/content/1.0}content";
+        Namespace NAMESPACE = Namespace.createNamespace("http://www.alfresco.org/model/content/1.0", "cm");
 
-        String AUDITABLE = "{http://www.alfresco.org/model/content/1.0}auditable";
+        QName FOLDER = createQName("folder");
+        QName CONTENT = createQName("content");
 
-        String NAME = "{http://www.alfresco.org/model/content/1.0}name";
+        QName AUDITABLE = createQName("auditable");
+        QName NAME = createQName("name");
 
-        String CREATOR = "{http://www.alfresco.org/model/content/1.0}creator";
-        String CREATED = "{http://www.alfresco.org/model/content/1.0}created";
-        String MODIFIER = "{http://www.alfresco.org/model/content/1.0}modifier";
-        String MODIFIED = "{http://www.alfresco.org/model/content/1.0}modified";
+        QName CREATOR = createQName("creator");
+        QName CREATED = createQName("created");
+        QName MODIFIER = createQName("modifier");
+        QName MODIFIED = createQName("modified");
 
+        static QName createQName(String localName) {
+            return QName.createQName(NAMESPACE, localName);
+        }
     }
 
     interface System {
 
-        String STORE_ROOT = "{http://www.alfresco.org/model/system/1.0}store_root";
+        Namespace NAMESPACE = Namespace.createNamespace("http://www.alfresco.org/model/system/1.0", "sys");
 
-        String NODE_DBID = "{http://www.alfresco.org/model/system/1.0}node-dbid";
+        QName STORE_ROOT = createQName("store_root");
 
-        String STORE_PROTOCOL = "{http://www.alfresco.org/model/system/1.0}store-protocol";
-        String STORE_IDENTIFIER = "{http://www.alfresco.org/model/system/1.0}store-identifier";
-        String NODE_UUID = "{http://www.alfresco.org/model/system/1.0}node-uuid";
+        QName NODE_DBID = createQName("node-dbid");
 
-        String LOCALE = "{http://www.alfresco.org/model/system/1.0}locale";
+        QName STORE_PROTOCOL = createQName("store-protocol");
+        QName STORE_IDENTIFIER = createQName("store-identifier");
+        QName NODE_UUID = createQName("node-uuid");
 
+        QName LOCALE = createQName("locale");
+
+        static QName createQName(String localName) {
+            return QName.createQName(NAMESPACE, localName);
+        }
     }
 
 }

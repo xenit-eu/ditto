@@ -1,9 +1,9 @@
 package eu.xenit.testing.ditto.internal;
 
-import eu.xenit.testing.ditto.api.Node;
+import eu.xenit.testing.ditto.api.model.Node;
 import eu.xenit.testing.ditto.api.NodeView;
 import eu.xenit.testing.ditto.api.Transaction;
-import eu.xenit.testing.ditto.api.NodeReference;
+import eu.xenit.testing.ditto.api.model.NodeReference;
 import eu.xenit.testing.ditto.internal.mvcc.Cursor;
 import eu.xenit.testing.ditto.internal.mvcc.RecordLogEntry;
 import eu.xenit.testing.ditto.util.Assert;

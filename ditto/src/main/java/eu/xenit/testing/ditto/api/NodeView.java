@@ -1,5 +1,7 @@
 package eu.xenit.testing.ditto.api;
 
+import eu.xenit.testing.ditto.api.model.Node;
+import eu.xenit.testing.ditto.api.model.NodeReference;
 import java.util.Optional;
 import java.util.stream.Stream;
 

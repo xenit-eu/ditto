@@ -1,8 +1,8 @@
 package eu.xenit.testing.ditto.api;
 
-import java.io.IOException;
+import eu.xenit.testing.ditto.api.model.NodeReference;
+import eu.xenit.testing.ditto.api.model.QName;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.Optional;
 
 public interface ContentView {
@@ -12,6 +12,6 @@ public interface ContentView {
     Optional<InputStream> getContent(String contentUrl);
 
     Optional<InputStream> getContent(NodeReference nodeRef);
-    Optional<InputStream> getContent(NodeReference nodeRef, String property);
+    Optional<InputStream> getContent(NodeReference nodeRef, QName property);
 
 }

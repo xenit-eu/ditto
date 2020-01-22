@@ -1,5 +1,8 @@
 package eu.xenit.testing.ditto.api;
 
+import eu.xenit.testing.ditto.api.model.Node;
+import eu.xenit.testing.ditto.api.model.NodeReference;
+import eu.xenit.testing.ditto.api.model.QName;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.Map;
@@ -10,19 +13,17 @@ public interface NodeCustomizer {
 
     Node build();
 
-    NodeCustomizer mimetype(String mimetype);
+    NodeReference nodeRef();
 
-    NodeCustomizer size(long size);
-
-    NodeReference getNodeRef();
-
-    NodeCustomizer properties(Map<String, Serializable> properties);
-
+    Map<QName, Serializable> properties();
+    NodeCustomizer properties(Map<QName, Serializable> properties);
     NodeCustomizer property(String key, String value);
+    NodeCustomizer property(QName key, String value);
 
+    Set<QName> aspects();
     NodeCustomizer aspects(Set<String> aspects);
-
     NodeCustomizer aspect(String aspect);
+    NodeCustomizer aspect(QName aspect);
 
     NodeCustomizer name(String name);
 
@@ -46,11 +47,13 @@ public interface NodeCustomizer {
 
     NodeCustomizer isDocument(boolean isDocument);
 
+    QName type();
     NodeCustomizer type(String type);
+    NodeCustomizer type(QName type);
 
     NodeCustomizer charset(Charset charset);
 
-    long getNodeId();
+    long nodeId();
 
     String storeRefProtocol();
 
@@ -60,17 +63,12 @@ public interface NodeCustomizer {
 
     boolean isDocument();
 
+    byte[] content();
+    Charset charset();
+    NodeCustomizer mimetype(String mimetype);
     String mimetype();
-
+    NodeCustomizer size(long size);
     long size();
 
-    String type();
 
-    Map<String, Serializable> getProperties();
-
-    byte[] content();
-
-    Charset charset();
-
-    Set<String> getAspects();
 }

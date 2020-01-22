@@ -23,7 +23,7 @@ public final class DefaultDataSetBuilder implements DataSetBuilder {
 
     DefaultDataSetBuilder(BootstrapConfiguration config)
     {
-        context = new RootContext(config.getBootstrapInstant());
+        context = new RootContext(config);
     }
 
     @Override
@@ -46,21 +46,7 @@ public final class DefaultDataSetBuilder implements DataSetBuilder {
         return this;
     }
 
-    @Override
-    public DataSetBuilder bootstrapAlfresco() {
-        return this.skipToTransaction(6)
-                .addTransaction(txn -> txn
-                        .skipToNodeId(12)
-                        .addNode(node -> node
-                                .type(System.STORE_ROOT)
-                        )
-                        .addFolder("Company Home")
-                        .addFolder("Space Templates")
 
-                        .skipToNodeId(26)
-                        .addFolder("User Homes")
-                );
-    }
 
     @Override
     public AlfrescoDataSet build() {

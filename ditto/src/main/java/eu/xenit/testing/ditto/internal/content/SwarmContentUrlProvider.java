@@ -1,6 +1,6 @@
 package eu.xenit.testing.ditto.internal.content;
 
-import eu.xenit.testing.ditto.api.Node;
+import eu.xenit.testing.ditto.api.model.Node;
 import java.util.UUID;
 
 public class SwarmContentUrlProvider implements ContentUrlProviderSpi {
