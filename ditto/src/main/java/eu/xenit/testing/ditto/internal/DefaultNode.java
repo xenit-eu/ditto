@@ -3,11 +3,11 @@ package eu.xenit.testing.ditto.internal;
 import static eu.xenit.testing.ditto.api.model.NodeReference.STOREREF_ID_SPACESSTORE;
 import static eu.xenit.testing.ditto.api.model.NodeReference.STOREREF_PROT_WORKSPACE;
 
-import eu.xenit.testing.ditto.api.model.Node;
 import eu.xenit.testing.ditto.api.NodeCustomizer;
+import eu.xenit.testing.ditto.api.data.ContentModel.Content;
+import eu.xenit.testing.ditto.api.model.Node;
 import eu.xenit.testing.ditto.api.model.NodeProperties;
 import eu.xenit.testing.ditto.api.model.NodeReference;
-import eu.xenit.testing.ditto.api.data.ContentModel.Content;
 import eu.xenit.testing.ditto.api.model.QName;
 import eu.xenit.testing.ditto.internal.DefaultTransaction.TransactionContext;
 import eu.xenit.testing.ditto.internal.content.ContentContext;
@@ -43,6 +43,9 @@ public class DefaultNode implements Node {
     private final long nodeId;
 
     @Getter
+    private final long txnId;
+
+    @Getter
     @NonNull
     private final NodeReference nodeRef;
 
@@ -60,6 +63,7 @@ public class DefaultNode implements Node {
 
     private DefaultNode(NodeBuilder builder) {
         this.nodeId = builder.nodeId;
+        this.txnId = builder.txnId;
         this.nodeRef = builder.nodeRef();
         this.type = builder.type;
         this.properties = new DefaultNodeProperties(builder.properties);
@@ -151,6 +155,7 @@ public class DefaultNode implements Node {
 
         private NodeBuilder(TransactionContext context) {
             this.nodeId = context.nextNodeId();
+            this.txnId = context.getTxnId();
             this.context = new NodeContext(context);
         }
 
@@ -165,6 +170,9 @@ public class DefaultNode implements Node {
 
         @Getter
         private final long nodeId;
+
+        @Getter
+        private final long txnId;
 
         @Getter
         @Setter
