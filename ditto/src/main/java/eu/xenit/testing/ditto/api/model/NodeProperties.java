@@ -2,9 +2,11 @@ package eu.xenit.testing.ditto.api.model;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.stream.Stream;
 
 public interface NodeProperties {
 
@@ -25,7 +27,12 @@ public interface NodeProperties {
     Collection<Serializable> values();
 
     void forEach(BiConsumer<? super QName, ? super Serializable> biConsumer);
+    Stream<Map.Entry<QName, Serializable>> stream();
 
     Optional<ContentData> getContentData();
 
+    class Property {
+        QName name;
+        Serializable value;
+    }
 }

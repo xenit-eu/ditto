@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.stream.Stream;
 
 public class DefaultNodeProperties implements NodeProperties {
 
@@ -77,6 +78,11 @@ public class DefaultNodeProperties implements NodeProperties {
     @Override
     public void forEach(BiConsumer<? super QName, ? super Serializable> biConsumer) {
         this.properties.forEach(biConsumer);
+    }
+
+    @Override
+    public Stream<Map.Entry<QName, Serializable>> stream() {
+        return this.properties.entrySet().stream();
     }
 
     @Override
