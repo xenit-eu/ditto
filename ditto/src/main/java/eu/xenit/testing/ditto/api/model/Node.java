@@ -1,6 +1,7 @@
 package eu.xenit.testing.ditto.api.model;
 
 import java.util.Set;
+import java.util.function.Predicate;
 
 public interface Node {
 
@@ -12,5 +13,19 @@ public interface Node {
 
     NodeProperties getProperties();
     Set<QName> getAspects();
+
+    interface Filters {
+        static <T> Predicate<T> always(boolean value) {
+            return (var0) -> value;
+        }
+
+        static Predicate<Node> minNodeId(Long minNodeId) {
+            return minNodeId == null ? always(true) : (node) -> node.getNodeId() >= minNodeId;
+        }
+
+        static Predicate<Node> maxNodeId(Long maxNodeId) {
+            return maxNodeId == null ? always(true) : (node) -> node.getNodeId() < maxNodeId;
+        }
+    }
 
 }
