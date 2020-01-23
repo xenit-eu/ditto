@@ -24,12 +24,28 @@ public interface Transaction {
             return (var0) -> value;
         }
 
-        static Predicate<Transaction> minTxnId(Long minTxnId) {
+        static Predicate<Transaction> minTxnIdInclusive(Long minTxnId) {
             if (minTxnId == null) {
                 return always(true);
             }
 
             return transaction -> transaction.getId() >= minTxnId;
+        }
+
+        static Predicate<Transaction> maxTxnIdInclusive(Long maxTxnId) {
+            if (maxTxnId == null) {
+                return always(true);
+            }
+
+            return transaction -> transaction.getId() <= maxTxnId;
+        }
+
+        static Predicate<Transaction> maxTxnIdExclusive(Long maxTxnId) {
+            if (maxTxnId == null) {
+                return always(true);
+            }
+
+            return transaction -> transaction.getId() < maxTxnId;
         }
 
         static Predicate<Transaction> fromCommitTime(Long fromCommitTime) {
@@ -38,14 +54,6 @@ public interface Transaction {
             }
 
             return transaction -> transaction.getCommitTimeMs() >= fromCommitTime;
-        }
-
-        static Predicate<Transaction> maxTxnId(Long maxTxnId) {
-            if (maxTxnId == null) {
-                return always(true);
-            }
-
-            return transaction -> transaction.getId() < maxTxnId;
         }
 
         static Predicate<Transaction> toCommitTime(Long toCommitTime) {

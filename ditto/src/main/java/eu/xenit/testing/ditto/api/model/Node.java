@@ -19,12 +19,12 @@ public interface Node {
             return (var0) -> value;
         }
 
-        static Predicate<Node> minNodeId(Long minNodeId) {
+        static Predicate<Node> minNodeIdInclusive(Long minNodeId) {
             return minNodeId == null ? always(true) : (node) -> node.getNodeId() >= minNodeId;
         }
 
-        static Predicate<Node> maxNodeId(Long maxNodeId) {
-            return maxNodeId == null ? always(true) : (node) -> node.getNodeId() < maxNodeId;
+        static Predicate<Node> maxNodeIdInclusive(Long maxNodeId) {
+            return maxNodeId == null ? always(true) : (node) -> node.getNodeId() <= maxNodeId;
         }
     }
 
