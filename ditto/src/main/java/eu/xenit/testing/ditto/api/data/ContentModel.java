@@ -12,6 +12,10 @@ public interface ContentModel {
         QName FOLDER = createQName("folder");
         QName CONTENT = createQName("content");
 
+        QName TITLED = createQName("titled");
+        QName TITLE = createQName("title");
+        QName DESCRIPTION = createQName("description");
+
         QName AUDITABLE = createQName("auditable");
         QName NAME = createQName("name");
 
@@ -19,6 +23,8 @@ public interface ContentModel {
         QName CREATED = createQName("created");
         QName MODIFIER = createQName("modifier");
         QName MODIFIED = createQName("modified");
+
+        QName OWNER = createQName("owner");
 
         static QName createQName(String localName) {
             return QName.createQName(NAMESPACE, localName);
