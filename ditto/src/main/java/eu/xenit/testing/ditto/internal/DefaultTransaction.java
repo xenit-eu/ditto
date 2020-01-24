@@ -37,7 +37,7 @@ public class DefaultTransaction implements Transaction {
 
     private DefaultTransaction(TransactionBuilder builder)
     {
-        this.id = builder.txnSeqId;
+        this.id = builder.context.txnId;
         this.changeId = builder.changeId;
         this.commitTimeMs = builder.commitTimeMs;
 
@@ -58,8 +58,12 @@ public class DefaultTransaction implements Transaction {
 
         private final RootContext rootContext;
 
+        @Getter
+        private final long txnId;
+
         TransactionContext(RootContext context) {
             this.rootContext = context;
+            this.txnId  = context.nextTxnId();
         }
 
         public Instant now() {
@@ -99,7 +103,6 @@ public class DefaultTransaction implements Transaction {
         private HashMap<NodeReference, Node> updated = new LinkedHashMap<>();
         private HashMap<NodeReference, Node> deleted = new LinkedHashMap<>();
 
-        private long txnSeqId;
         private long commitTimeMs;
 
         private final TransactionContext context;
@@ -107,7 +110,6 @@ public class DefaultTransaction implements Transaction {
         private TransactionBuilder(RootContext rootContext) {
             this.context = new TransactionContext(rootContext);
 
-            this.txnSeqId = rootContext.nextTxnId();
             this.commitTimeMs = rootContext.commitTimeInMillis();
             this.changeId = UUID.randomUUID().toString();
         }

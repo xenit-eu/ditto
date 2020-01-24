@@ -8,6 +8,7 @@ import java.util.function.Predicate;
 public interface Node {
 
     long getNodeId();
+    long getTxnId();
     NodeReference getNodeRef();
     QName getType();
 

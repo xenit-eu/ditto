@@ -1,9 +1,9 @@
 package eu.xenit.testing.ditto.internal;
 
 
-import eu.xenit.testing.ditto.api.model.ContentData;
 import eu.xenit.testing.ditto.api.data.ContentModel.Content;
 import eu.xenit.testing.ditto.api.data.ContentModel.System;
+import eu.xenit.testing.ditto.api.model.ContentData;
 import eu.xenit.testing.ditto.api.model.QName;
 import eu.xenit.testing.ditto.internal.DefaultNode.NodeContext;
 import eu.xenit.testing.ditto.internal.content.ContentUrlProviderSpi;
@@ -67,6 +67,8 @@ public class NodeInitializer {
         node.getProperties().putIfAbsent(Content.CREATED, context.getInstant().toString());
         node.getProperties().putIfAbsent(Content.MODIFIER, "System");
         node.getProperties().putIfAbsent(Content.MODIFIED, context.getInstant().toString());
+
+        node.getProperties().putIfAbsent(Content.OWNER, node.getProperties().get(Content.CREATOR));
     }
 
     private void setContentData(DefaultNode node, NodeContext context) {

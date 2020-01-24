@@ -56,9 +56,7 @@ public interface NodeCustomizer {
     NodeCustomizer charset(Charset charset);
 
     long nodeId();
-
-
-
+    long txnId();
 
 
     String uuid();
