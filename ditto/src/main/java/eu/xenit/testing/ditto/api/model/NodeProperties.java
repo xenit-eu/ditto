@@ -2,6 +2,7 @@ package eu.xenit.testing.ditto.api.model;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -18,7 +19,7 @@ public interface NodeProperties {
     Serializable get(QName key);
     Serializable getOrDefault(QName key, Serializable defaultValue);
 
-    Serializable put(QName s, Serializable value);
+    Serializable put(QName key, Serializable value);
     Serializable putIfAbsent(QName key, Serializable value);
 
     Serializable remove(QName key);
@@ -30,6 +31,17 @@ public interface NodeProperties {
     Stream<Map.Entry<QName, Serializable>> stream();
 
     Optional<ContentData> getContentData();
+
+    Locale defaultLocale();
+    default String getMLText(QName key) {
+        return getMLText(key, defaultLocale());
+    }
+    String getMLText(QName key, Locale locale);
+    default MLText putMLText(QName key, String value) {
+        return putMLText(key, defaultLocale(), value);
+    }
+    MLText putMLText(QName key, Locale locale, String value);
+
 
     class Property {
         QName name;

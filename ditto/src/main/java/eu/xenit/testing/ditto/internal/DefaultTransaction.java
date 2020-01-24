@@ -17,6 +17,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -68,6 +69,10 @@ public class DefaultTransaction implements Transaction {
 
         public Instant now() {
             return this.rootContext.now();
+        }
+
+        public Locale defaultLocale() {
+            return this.rootContext.defaultLocale();
         }
 
         public void skipToNodeId(long nodeId) {

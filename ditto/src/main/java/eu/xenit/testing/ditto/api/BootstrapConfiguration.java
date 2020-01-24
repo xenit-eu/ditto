@@ -4,6 +4,7 @@ import eu.xenit.testing.ditto.api.model.Namespace;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import lombok.Data;
@@ -12,6 +13,7 @@ import lombok.experimental.Accessors;
 public interface BootstrapConfiguration {
 
     Instant getBootstrapInstant();
+    Locale getDefaultLocale();
     Set<Namespace> getNamespaces();
 
     static BootstrapConfiguration withDefaults() {
@@ -32,6 +34,7 @@ public interface BootstrapConfiguration {
 
         private Instant bootstrapInstant = Instant.now();
         private Set<Namespace> namespaces = new HashSet<>();
+        private Locale defaultLocale = Locale.ENGLISH;
 
         private DefaultBootstrapConfiguration()
         {

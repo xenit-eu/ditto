@@ -3,6 +3,8 @@ package eu.xenit.testing.ditto.api;
 import eu.xenit.testing.ditto.api.data.ContentModel.Content;
 import eu.xenit.testing.ditto.api.data.ContentModel.System;
 import eu.xenit.testing.ditto.api.data.ContentModel.User;
+import eu.xenit.testing.ditto.api.model.MLText;
+import java.util.Locale;
 
 class AlfrescoBootstrapper {
 
@@ -43,7 +45,11 @@ class AlfrescoBootstrapper {
                         .addNode(node -> node
                                 .type(System.STORE_ROOT)
                         )
-                        .addFolder("Company Home")
+                        .addFolder("Company Home", node -> {
+                            node.property(Content.TITLE, MLText.create(Locale.ENGLISH, "Company Home"));
+                            node.property(Content.DESCRIPTION,
+                                    MLText.create(Locale.ENGLISH, "The company root space"));
+                        })
                         .addFolder("Space Templates")
 
                         .skipToNodeId(26)

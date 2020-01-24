@@ -17,8 +17,8 @@ public interface NodeCustomizer {
 
     Map<QName, Serializable> properties();
     NodeCustomizer properties(Map<QName, Serializable> properties);
-    NodeCustomizer property(String key, String value);
-    NodeCustomizer property(QName key, String value);
+    NodeCustomizer property(String key, Serializable value);
+    NodeCustomizer property(QName key, Serializable value);
 
     Set<QName> aspects();
     NodeCustomizer aspects(Set<String> aspects);

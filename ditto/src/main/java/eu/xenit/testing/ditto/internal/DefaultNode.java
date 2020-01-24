@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -66,7 +67,7 @@ public class DefaultNode implements Node {
         this.txnId = builder.txnId;
         this.nodeRef = builder.nodeRef();
         this.type = builder.type;
-        this.properties = new DefaultNodeProperties(builder.properties);
+        this.properties = new DefaultNodeProperties(builder.context.defaultLocale, builder.properties);
         this.aspects = new HashSet<>(builder.aspects);
 
         init.accept(this, builder.context);
@@ -91,9 +92,13 @@ public class DefaultNode implements Node {
         @Getter
         private final Instant instant;
 
+        @Getter
+        private final Locale defaultLocale;
+
         private NodeContext(TransactionContext txnContext) {
             this.txnContext = txnContext;
             this.instant = txnContext.now();
+            this.defaultLocale = txnContext.defaultLocale();
         }
 
         @Setter
@@ -226,7 +231,7 @@ public class DefaultNode implements Node {
         }
 
         @Override
-        public NodeBuilder property(String key, String value) {
+        public NodeBuilder property(String key, Serializable value) {
             Objects.requireNonNull(key, "Argument 'key' should not be null");
 
             QName qname = this.context.resolveQName(key);
@@ -236,7 +241,7 @@ public class DefaultNode implements Node {
         }
 
         @Override
-        public NodeBuilder property(QName key, String value) {
+        public NodeBuilder property(QName key, Serializable value) {
             Objects.requireNonNull(key, "Argument 'key' should not be null");
             this.properties.put(key, value);
             return this;
