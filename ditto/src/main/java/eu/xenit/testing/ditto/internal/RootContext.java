@@ -1,6 +1,7 @@
 package eu.xenit.testing.ditto.internal;
 
 import eu.xenit.testing.ditto.api.BootstrapConfiguration;
+import eu.xenit.testing.ditto.api.data.ContentModel.Content;
 import eu.xenit.testing.ditto.api.model.Node;
 import eu.xenit.testing.ditto.api.model.QName;
 import eu.xenit.testing.ditto.internal.content.ContentUrlProviderSpi;
@@ -110,5 +111,9 @@ public class RootContext {
 
     public QName resolveQName(String qname) {
         return this.dictionary.resolveQName(qname);
+    }
+
+    public QName getDefaultChildAssocType() {
+        return Content.CONTAINS;
     }
 }

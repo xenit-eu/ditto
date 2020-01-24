@@ -12,10 +12,30 @@ public interface Node {
     NodeReference getNodeRef();
     QName getType();
 
+    ParentChildAssoc getPrimaryParentAssoc();
+
+    QName getQName();
+
     String getName();
 
     NodeProperties getProperties();
     Set<QName> getAspects();
+
+    default Node getParent() {
+        ParentChildAssoc primaryParentAssoc = this.getPrimaryParentAssoc();
+        return primaryParentAssoc != null ? primaryParentAssoc.getParent() : null;
+    }
+
+    default String getQNamePath() {
+        Node parent = this.getParent();
+        if (parent == null) {
+            return "";
+        }
+
+        return parent.getQNamePath() + "/" + this.getQName().toPrefixString();
+    }
+
+    ParentChildNodeCollection getChildNodeCollection();
 
     interface Filters {
         static <T> Predicate<T> always(boolean value) {

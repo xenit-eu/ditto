@@ -37,11 +37,13 @@ public interface AlfrescoDataSet {
     static DataSetBuilder bootstrapAlfresco(Instant bootstrapInstant, Consumer<BootstrapConfiguration> callback) {
         DataSetBuilderFactory factory = DataSetBuilderProvider.getInstance().getFactory();
         BootstrapConfiguration config = BootstrapConfiguration.withBootstrapInstant(bootstrapInstant);
-        AlfrescoBootstrapper.configureBootstrap(config);
+
+        AlfrescoBootstrapper<DataSetBuilder> alfrescoBootstrapper = new AlfrescoBootstrapper<>();
+        alfrescoBootstrapper.configureBootstrap(config);
         callback.accept(config);
 
         DataSetBuilder builder = factory.createBuilder(config);
-        return AlfrescoBootstrapper.bootstrap(builder);
+        return alfrescoBootstrapper.bootstrap(builder);
     }
 
     static AlfrescoDataSet empty() {

@@ -19,18 +19,12 @@ import java.util.stream.Stream;
 public class DefaultNodeProperties implements NodeProperties {
 
     private final Map<QName, Serializable> properties = new LinkedHashMap<>();
-    private Locale defaultLocale;
 
     public DefaultNodeProperties() {
         this(Collections.emptyMap());
     }
 
     public DefaultNodeProperties(Map<QName, Serializable> properties) {
-        this(Locale.ENGLISH, properties);
-    }
-
-    public DefaultNodeProperties(Locale defaultLocale, Map<QName, Serializable> properties) {
-        this.defaultLocale = defaultLocale;
         this.properties.putAll(properties);
     }
 

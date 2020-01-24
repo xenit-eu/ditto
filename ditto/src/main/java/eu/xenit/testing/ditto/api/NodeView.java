@@ -7,9 +7,13 @@ import java.util.stream.Stream;
 
 public interface NodeView {
 
+    Optional<Node> getNode(long nodeId);
     Optional<Node> getNode(NodeReference nodeRef);
     Optional<Node> getNode(String nodeRef);
 
     Stream<Node> stream();
+    Stream<Node> roots();
+
+    Optional<Node> getCompanyHome();
 
 }

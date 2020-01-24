@@ -2,6 +2,8 @@ package eu.xenit.testing.ditto.internal;
 
 import eu.xenit.testing.ditto.api.NodeCustomizer;
 import eu.xenit.testing.ditto.api.content.SwarmContentServiceCustomizer;
+import eu.xenit.testing.ditto.api.data.ContentModel.Content;
+import eu.xenit.testing.ditto.api.data.ContentModel.System;
 import eu.xenit.testing.ditto.api.model.QName;
 import eu.xenit.testing.ditto.internal.content.ContentUrlProviderSpi;
 import eu.xenit.testing.ditto.api.model.Node;
@@ -99,6 +101,14 @@ public class DefaultTransaction implements Transaction {
         public QName resolveQName(String qname) {
             return this.rootContext.resolveQName(qname);
         }
+
+        public void registerStoreRoot(Node root) {
+
+        }
+
+        public QName getDefaultChildAssocType() {
+            return this.rootContext.getDefaultChildAssocType();
+        }
     }
 
     public static class TransactionBuilder implements TransactionCustomizer {
@@ -131,48 +141,53 @@ public class DefaultTransaction implements Transaction {
         }
 
         @Override
-        public TransactionBuilder addNode(Consumer<NodeCustomizer> customizer) {
-            NodeBuilder builder = DefaultNode.builder(this.context);
+        public Node addNode(Node parent, QName assocType, Consumer<NodeCustomizer> customizer) {
+            NodeBuilder builder = DefaultNode.builder(this.context, parent, assocType);
             customizer.accept(builder);
 
             DefaultNode node = builder.build();
             this.updated.put(node.getNodeRef(), node);
-            return this;
+            return node;
         }
 
         @Override
-        public TransactionBuilder addNode() {
-            this.addNode(node -> { });
-            return this;
+        public Node addNode(Node parent, Consumer<NodeCustomizer> customizer) {
+            return this.addNode(parent, this.context.getDefaultChildAssocType(), customizer);
         }
 
         @Override
-        public TransactionBuilder addDocument(String name)
-        {
-            return this.addDocument(name, (node) -> { });
+        public Node addNode(Consumer<NodeCustomizer> customizer) {
+            // TODO parent should be configured default (company home?)
+            // loaded from the transaction/root context ?
+            return this.addNode(null, null, customizer);
         }
 
         @Override
-        public TransactionBuilder addDocument(String name, Consumer<NodeCustomizer> callback) {
-            return this.addNode(nodeBuilder -> {
-                nodeBuilder.isDocument(true);
-                nodeBuilder.type(ContentModel.Content.CONTENT);
-                nodeBuilder.name(name);
-                callback.accept(nodeBuilder);
+        public Node addRoot(Consumer<NodeCustomizer> callback) {
+            return this.addNode(null, null, node -> {
+                node.type(System.STORE_ROOT);
+                node.aspect(System.ASPECT_ROOT);
+                callback.accept(node);
+
+                node.callback(root -> {
+                    this.context.registerStoreRoot(root);
+                });
             });
         }
 
         @Override
-        public TransactionBuilder addFolder(String name) {
-            return this.addFolder(name, (node) -> { });
+        public Node addDocument(Node parent, Consumer<NodeCustomizer> callback) {
+            return this.addNode(parent, node -> {
+                node.type(Content.CONTENT);
+                callback.accept(node);
+            });
         }
 
         @Override
-        public TransactionBuilder addFolder(String name, Consumer<NodeCustomizer> callback) {
-            return this.addNode(nodeBuilder -> {
-                nodeBuilder.type(ContentModel.Content.FOLDER);
-                nodeBuilder.name(name);
-                callback.accept(nodeBuilder);
+        public Node addFolder(Node parent, Consumer<NodeCustomizer> callback) {
+            return this.addNode(parent, node -> {
+                node.type(ContentModel.Content.FOLDER);
+                callback.accept(node);
             });
         }
 

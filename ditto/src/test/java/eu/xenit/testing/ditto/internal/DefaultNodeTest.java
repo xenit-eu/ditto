@@ -21,7 +21,7 @@ class DefaultNodeTest {
         when(root.nextTxnId()).thenReturn(7L);
         TransactionContext txn = new TransactionContext(root);
 
-        Node node = DefaultNode.builder(txn).build();
+        Node node = DefaultNode.builder(txn, null, null).build();
 
         assertThat(node.getTxnId()).isEqualTo(7L);
     }
@@ -37,7 +37,7 @@ class DefaultNodeTest {
         final String name = "My Node Name";
         final String title = "My Fantastic Title";
 
-        Node node = DefaultNode.builder(txn)
+        Node node = DefaultNode.builder(txn, null, null)
                 .property(Content.NAME, name)
                 .property(Content.TITLE, MLText.create(Locale.ITALIAN, title))
                 .build();

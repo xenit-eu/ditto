@@ -11,7 +11,8 @@ class AlfrescoDataSetTest {
     private AlfrescoDataSet dataSet = AlfrescoDataSet.bootstrapAlfresco()
             .skipToTransaction(12345L)
             .addTransaction(txn -> {
-                txn.addDocument("foo.txt", doc -> {
+                txn.addDocument(null, doc -> {
+                    doc.name("foo.txt");
                     doc.content("foobar");
                     doc.property("cm:description", "Test description");
                     NODEREF_FOO_TXT = doc.nodeRef();

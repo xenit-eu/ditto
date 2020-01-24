@@ -27,9 +27,6 @@ public class Namespace {
     }
 
     public static Namespace createNamespace(String namespace, String ... prefix) {
-        if (namespace == null) {
-
-        }
         return new Namespace(namespace, Arrays.asList(prefix));
     }
 
