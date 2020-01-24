@@ -51,7 +51,6 @@ class DefaultNodeTest {
                 });
         assertThat(node.getProperties().getMLText(Content.TITLE, Locale.ITALIAN)).isEqualTo(title);
         assertThat(node.getProperties().getMLText(Content.TITLE, Locale.CHINA)).isNull();
-        assertThat(node.getProperties().getMLText(Content.TITLE)).isEqualTo(title);
         assertThat(node.getProperties().get(Content.NAME)).isEqualTo(name);
 
     }

@@ -3,8 +3,6 @@ package eu.xenit.testing.ditto.api;
 import eu.xenit.testing.ditto.api.data.ContentModel.Content;
 import eu.xenit.testing.ditto.api.data.ContentModel.System;
 import eu.xenit.testing.ditto.api.data.ContentModel.User;
-import eu.xenit.testing.ditto.api.model.MLText;
-import java.util.Locale;
 
 class AlfrescoBootstrapper {
 
@@ -12,8 +10,7 @@ class AlfrescoBootstrapper {
         config.withNamespaces(System.NAMESPACE, Content.NAMESPACE);
     }
 
-    static DataSetBuilder bootstrap(DataSetBuilder builder)
-    {
+    static DataSetBuilder bootstrap(DataSetBuilder builder) {
         builder.addTransaction(txn -> {
             txn.addNode(userStoreRoot -> {
                 userStoreRoot.type(System.STORE_ROOT);
@@ -46,9 +43,8 @@ class AlfrescoBootstrapper {
                                 .type(System.STORE_ROOT)
                         )
                         .addFolder("Company Home", node -> {
-                            node.property(Content.TITLE, MLText.create(Locale.ENGLISH, "Company Home"));
-                            node.property(Content.DESCRIPTION,
-                                    MLText.create(Locale.ENGLISH, "The company root space"));
+                            node.mlProperty(Content.TITLE, "Company Home");
+                            node.mlProperty(Content.DESCRIPTION, "The company root space");
                         })
                         .addFolder("Space Templates")
 
