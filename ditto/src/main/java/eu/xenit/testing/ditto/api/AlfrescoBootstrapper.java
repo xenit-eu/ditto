@@ -10,8 +10,7 @@ class AlfrescoBootstrapper {
         config.withNamespaces(System.NAMESPACE, Content.NAMESPACE);
     }
 
-    static DataSetBuilder bootstrap(DataSetBuilder builder)
-    {
+    static DataSetBuilder bootstrap(DataSetBuilder builder) {
         builder.addTransaction(txn -> {
             txn.addNode(userStoreRoot -> {
                 userStoreRoot.type(System.STORE_ROOT);
@@ -43,7 +42,10 @@ class AlfrescoBootstrapper {
                         .addNode(node -> node
                                 .type(System.STORE_ROOT)
                         )
-                        .addFolder("Company Home")
+                        .addFolder("Company Home", node -> {
+                            node.mlProperty(Content.TITLE, "Company Home");
+                            node.mlProperty(Content.DESCRIPTION, "The company root space");
+                        })
                         .addFolder("Space Templates")
 
                         .skipToNodeId(26)

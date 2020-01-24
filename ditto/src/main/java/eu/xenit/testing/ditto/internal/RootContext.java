@@ -9,6 +9,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import lombok.Getter;
@@ -22,6 +23,7 @@ public class RootContext {
     private long nextNodeId = 1;
 
     private final Instant bootstrapInstant;
+    private final Locale defaultLocale;
 
     private ContentUrlProviderSpi contentUrlProvider = null;
     private static final ContentUrlProviderSpi DEFAULT_CONTENTURLPROVIDER = new FileSystemContentUrlProvider();
@@ -31,6 +33,7 @@ public class RootContext {
         Objects.requireNonNull(bootstrapConfig, "Argument 'bootstrapConfig' is required");
 
         this.bootstrapInstant = bootstrapConfig.getBootstrapInstant();
+        this.defaultLocale = bootstrapConfig.getDefaultLocale();
         this.clock =  Clock.fixed(bootstrapInstant, ZoneId.of("UTC"));
 
 
@@ -71,6 +74,10 @@ public class RootContext {
 
     Instant now() {
         return Instant.now(this.clock);
+    }
+
+    public Locale defaultLocale() {
+        return this.defaultLocale;
     }
 
     long commitTimeInMillis() {

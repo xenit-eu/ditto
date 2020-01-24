@@ -5,6 +5,7 @@ import eu.xenit.testing.ditto.api.model.NodeReference;
 import eu.xenit.testing.ditto.api.model.QName;
 import java.io.Serializable;
 import java.nio.charset.Charset;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -17,8 +18,10 @@ public interface NodeCustomizer {
 
     Map<QName, Serializable> properties();
     NodeCustomizer properties(Map<QName, Serializable> properties);
-    NodeCustomizer property(String key, String value);
-    NodeCustomizer property(QName key, String value);
+    NodeCustomizer property(String key, Serializable value);
+    NodeCustomizer property(QName key, Serializable value);
+    NodeCustomizer mlProperty(QName key, String value);
+    NodeCustomizer mlProperty(QName key, Locale locale, String value);
 
     Set<QName> aspects();
     NodeCustomizer aspects(Set<String> aspects);

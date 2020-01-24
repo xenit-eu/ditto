@@ -5,8 +5,8 @@ import static eu.xenit.testing.ditto.api.model.NodeReference.STOREREF_PROT_WORKS
 
 import eu.xenit.testing.ditto.api.NodeCustomizer;
 import eu.xenit.testing.ditto.api.data.ContentModel.Content;
+import eu.xenit.testing.ditto.api.model.MLText;
 import eu.xenit.testing.ditto.api.model.Node;
-import eu.xenit.testing.ditto.api.model.NodeProperties;
 import eu.xenit.testing.ditto.api.model.NodeReference;
 import eu.xenit.testing.ditto.api.model.QName;
 import eu.xenit.testing.ditto.internal.DefaultTransaction.TransactionContext;
@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -54,7 +55,7 @@ public class DefaultNode implements Node {
     private final QName type;
 
     @Getter
-    private final NodeProperties properties;
+    private final DefaultNodeProperties properties;
 
     @Getter
     private final Set<QName> aspects;
@@ -66,7 +67,7 @@ public class DefaultNode implements Node {
         this.txnId = builder.txnId;
         this.nodeRef = builder.nodeRef();
         this.type = builder.type;
-        this.properties = new DefaultNodeProperties(builder.properties);
+        this.properties = new DefaultNodeProperties(builder.context.defaultLocale, builder.properties);
         this.aspects = new HashSet<>(builder.aspects);
 
         init.accept(this, builder.context);
@@ -91,9 +92,13 @@ public class DefaultNode implements Node {
         @Getter
         private final Instant instant;
 
+        @Getter
+        private final Locale defaultLocale;
+
         private NodeContext(TransactionContext txnContext) {
             this.txnContext = txnContext;
             this.instant = txnContext.now();
+            this.defaultLocale = txnContext.defaultLocale();
         }
 
         @Setter
@@ -226,7 +231,7 @@ public class DefaultNode implements Node {
         }
 
         @Override
-        public NodeBuilder property(String key, String value) {
+        public NodeBuilder property(String key, Serializable value) {
             Objects.requireNonNull(key, "Argument 'key' should not be null");
 
             QName qname = this.context.resolveQName(key);
@@ -236,9 +241,29 @@ public class DefaultNode implements Node {
         }
 
         @Override
-        public NodeBuilder property(QName key, String value) {
+        public NodeBuilder property(QName key, Serializable value) {
             Objects.requireNonNull(key, "Argument 'key' should not be null");
             this.properties.put(key, value);
+            return this;
+        }
+
+        @Override
+        public NodeCustomizer mlProperty(QName key, String value) {
+            return mlProperty(key, context.defaultLocale, value);
+        }
+
+        @Override
+        public NodeCustomizer mlProperty(QName key, Locale locale, String value) {
+            Objects.requireNonNull(locale, "Argument 'locale' should not be null");
+            if (this.properties.containsKey(key)) {
+                Serializable existing = this.properties.get(key);
+                if (!(existing instanceof MLText)) {
+                    throw new IllegalStateException(String.format("Property '%s' is not of type d:mltext", existing));
+                }
+                this.properties.put(key, ((MLText) existing).put(locale, value));
+            } else {
+                this.properties.put(key, MLText.create(locale, value));
+            }
             return this;
         }
 
