@@ -1,5 +1,8 @@
 package eu.xenit.testing.ditto.api.model;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
 public class QName {
 
     private final Namespace namespace;

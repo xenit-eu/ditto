@@ -7,7 +7,7 @@ import eu.xenit.testing.ditto.api.DataSetBuilderFactory;
 public class DefaultDataSetBuilderFactory implements DataSetBuilderFactory {
 
     @Override
-    public DataSetBuilder createBuilder(BootstrapConfiguration config) {
+    public DefaultDataSetBuilder createBuilder(BootstrapConfiguration config) {
         return new DefaultDataSetBuilder(config);
     }
 }

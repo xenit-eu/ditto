@@ -8,6 +8,7 @@ import eu.xenit.testing.ditto.api.data.ContentModel.Content;
 import eu.xenit.testing.ditto.api.model.MLText;
 import eu.xenit.testing.ditto.api.model.Node;
 import eu.xenit.testing.ditto.api.model.NodeReference;
+import eu.xenit.testing.ditto.api.model.ParentChildAssoc;
 import eu.xenit.testing.ditto.api.model.QName;
 import eu.xenit.testing.ditto.internal.DefaultTransaction.TransactionContext;
 import eu.xenit.testing.ditto.internal.content.ContentContext;
@@ -55,7 +56,17 @@ public class DefaultNode implements Node {
     private final QName type;
 
     @Getter
+    @NonNull
+    private final QName qName;
+
+    @Getter
+    private final ParentChildAssoc primaryParentAssoc;
+
+    @Getter
     private final DefaultNodeProperties properties;
+
+    @Getter
+    private final DefaultParentChildNodeCollection childNodeCollection;
 
     @Getter
     private final Set<QName> aspects;
@@ -67,19 +78,36 @@ public class DefaultNode implements Node {
         this.txnId = builder.txnId;
         this.nodeRef = builder.nodeRef();
         this.type = builder.type;
-        this.properties = new DefaultNodeProperties(builder.context.defaultLocale, builder.properties);
+        this.properties = new DefaultNodeProperties(builder.properties);
+        this.qName = builder.qname != null ? builder.qname : Content.createQName(this.getName());
         this.aspects = new HashSet<>(builder.aspects);
+        this.childNodeCollection = new DefaultParentChildNodeCollection(this);
+
+        if (builder.context.getParent() != null && builder.context.getParentChildAssocType() != null) {
+            this.primaryParentAssoc = new DefaultParentChildAssoc(builder.context.getParent(),
+                    builder.context.getParentChildAssocType(), this, true);
+        } else {
+            this.primaryParentAssoc = null;
+        }
 
         init.accept(this, builder.context);
     }
 
-    public static NodeBuilder builder(TransactionContext context) {
-        return new NodeBuilder(context);
+    public static NodeBuilder builder(TransactionContext context, Node parent,
+            QName assocType) {
+        return new NodeBuilder(context, parent, assocType);
     }
 
     @Override
     public String getName() {
-        return (String) this.getProperties().get(Content.NAME);
+        String name = (String) this.getProperties().get(Content.NAME);
+        return name != null ? name : this.getNodeRef().getUuid();
+    }
+
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName()+"[id="+this.nodeId+"; nodeRef="+this.getNodeRef()+"]";
     }
 
     public static class NodeContext implements ContentContext {
@@ -95,10 +123,20 @@ public class DefaultNode implements Node {
         @Getter
         private final Locale defaultLocale;
 
-        private NodeContext(TransactionContext txnContext) {
+        @Getter
+        private final Node parent;
+
+        @Getter
+        private final QName parentChildAssocType;
+
+
+        private NodeContext(TransactionContext txnContext, Node parent, QName parentChildAssocType) {
+
             this.txnContext = txnContext;
             this.instant = txnContext.now();
             this.defaultLocale = txnContext.defaultLocale();
+            this.parent = parent;
+            this.parentChildAssocType = parentChildAssocType;
         }
 
         @Setter
@@ -149,23 +187,21 @@ public class DefaultNode implements Node {
         public Charset getEncodingOrDefault() {
             return StringUtils.hasText(encoding) ? Charset.forName(this.encoding) : Charset.defaultCharset();
         }
-
     }
 
     @Accessors(fluent = true, chain = true)
     public static class NodeBuilder implements NodeCustomizer {
 
-
         private final NodeContext context;
 
-        private NodeBuilder(TransactionContext context) {
+
+        private NodeBuilder(TransactionContext context, Node parent, QName parentChildAssocType) {
             this.nodeId = context.nextNodeId();
             this.txnId = context.getTxnId();
-            this.context = new NodeContext(context);
+            this.context = new NodeContext(context, parent, parentChildAssocType);
         }
 
-        @Override
-        public DefaultNode build() {
+        DefaultNode build() {
             DefaultNode node = new DefaultNode(this);
 
             this.callbacks.forEach(callback -> callback.accept(node));
@@ -200,8 +236,8 @@ public class DefaultNode implements Node {
         }
 
         @Getter
-        @Accessors(fluent = true, chain = true)
-        private QName type = Content.CONTENT;
+        @Accessors(fluent = true)
+        private QName type = Content.OBJECT;
 
         @Override
         public NodeCustomizer type(QName type) {
@@ -214,6 +250,22 @@ public class DefaultNode implements Node {
             this.type = this.context.resolveQName(type);
             return this;
         }
+
+        @Getter
+        @Accessors(fluent = true)
+        private QName qname;
+
+        @Override
+        public NodeCustomizer qname(String qname) {
+            return this.qname(this.context.resolveQName(qname));
+        }
+
+        @Override
+        public NodeCustomizer qname(QName qname) {
+            this.qname = qname;
+            return this;
+        }
+
 
         @Getter
         private Map<QName, Serializable> properties = new HashMap<>();

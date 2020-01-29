@@ -2,6 +2,8 @@ package eu.xenit.testing.ditto.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import eu.xenit.testing.ditto.api.data.ContentModel;
+import eu.xenit.testing.ditto.api.data.ContentModel.Content;
 import eu.xenit.testing.ditto.api.model.NodeReference;
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
@@ -11,7 +13,9 @@ class AlfrescoDataSetTest {
     private AlfrescoDataSet dataSet = AlfrescoDataSet.bootstrapAlfresco()
             .skipToTransaction(12345L)
             .addTransaction(txn -> {
-                txn.addDocument("foo.txt", doc -> {
+                txn.addNode(doc -> {
+                    doc.type(Content.CONTENT);
+                    doc.name("foo.txt");
                     doc.content("foobar");
                     doc.property("cm:description", "Test description");
                     NODEREF_FOO_TXT = doc.nodeRef();

@@ -11,6 +11,10 @@ public interface ContentModel {
 
         QName FOLDER = createQName("folder");
         QName CONTENT = createQName("content");
+        QName OBJECT = createQName("object");
+
+
+        QName CONTAINS = createQName("contains");
 
         QName TITLED = createQName("titled");
         QName TITLE = createQName("title");
@@ -38,13 +42,18 @@ public interface ContentModel {
         QName STORE_ROOT = createQName("store_root");
         QName CONTAINER = createQName("container");
 
+        QName CHILDREN = createQName("children");
+
         QName NODE_DBID = createQName("node-dbid");
 
+        QName REFERENCEABLE = createQName("referenceable");
         QName STORE_PROTOCOL = createQName("store-protocol");
         QName STORE_IDENTIFIER = createQName("store-identifier");
         QName NODE_UUID = createQName("node-uuid");
 
         QName LOCALE = createQName("locale");
+        QName LOCALIZED = createQName("localized");
+        QName ASPECT_ROOT = createQName("aspect_root");
 
         static QName createQName(String localName) {
             return QName.createQName(NAMESPACE, localName);
@@ -56,6 +65,17 @@ public interface ContentModel {
 
         QName USER = createQName("user");
         QName USERNAME = createQName("username");
+
+        static QName createQName(String localName) {
+            return QName.createQName(NAMESPACE, localName);
+        }
+    }
+
+    interface Application {
+        Namespace NAMESPACE = Namespace.createNamespace("http://www.alfresco.org/model/application/1.0", "app");
+
+        QName UIFACETS = createQName("uifacets");
+        QName ICON = createQName("icon");
 
         static QName createQName(String localName) {
             return QName.createQName(NAMESPACE, localName);

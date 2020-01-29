@@ -1,5 +1,12 @@
 package eu.xenit.testing.ditto.internal;
 
+import static eu.xenit.testing.ditto.api.model.NodeReference.STOREREF_ID_SPACESSTORE;
+import static eu.xenit.testing.ditto.api.model.NodeReference.STOREREF_PROT_WORKSPACE;
+
+import eu.xenit.testing.ditto.api.data.ContentModel;
+import eu.xenit.testing.ditto.api.data.ContentModel.Application;
+import eu.xenit.testing.ditto.api.data.ContentModel.Content;
+import eu.xenit.testing.ditto.api.data.ContentModel.System;
 import eu.xenit.testing.ditto.api.model.Node;
 import eu.xenit.testing.ditto.api.NodeView;
 import eu.xenit.testing.ditto.api.model.Transaction;
@@ -44,18 +51,19 @@ public class DefaultNodeView implements NodeView {
     }
 
     private void process(Transaction txn) {
-        log.debug("Replaying {} - with {} writes and {} deletes", txn, txn.getUpdated().size(), txn.getDeleted().size());
+        log.debug("Replaying {} - with {} writes and {} deletes", txn, txn.getUpdated().size(),
+                txn.getDeleted().size());
 
-        txn.getUpdated().forEach(this::add);
-        txn.getDeleted().forEach(this::delete);
+        txn.getUpdated().forEach(this::_add);
+        txn.getDeleted().forEach(this::_delete);
     }
 
-    private void add(Node node) {
+    private void _add(Node node) {
         this.nodesById.put(node.getNodeId(), node);
         this.nodesByNodeRef.put(node.getNodeRef(), node);
     }
 
-    private void delete(Node node) {
+    private void _delete(Node node) {
         Long nodeId = node.getNodeId();
 
         Node removed = this.nodesById.remove(nodeId);
@@ -72,8 +80,7 @@ public class DefaultNodeView implements NodeView {
         this.nodesByNodeRef.remove(node.getNodeRef());
     }
 
-    public Optional<Node> getNode(String nodeRef)
-    {
+    public Optional<Node> getNode(String nodeRef) {
         Assert.hasText(nodeRef, "Argument 'nodeRef' should not be empty or null");
         return this.getNode(NodeReference.parse(nodeRef));
     }
@@ -83,7 +90,36 @@ public class DefaultNodeView implements NodeView {
         return Optional.of(this.nodesByNodeRef.get(nodeRef));
     }
 
+    public Optional<Node> getNode(long nodeId) {
+        return Optional.ofNullable(this.nodesById.get(nodeId));
+    }
+
     public Stream<Node> stream() {
         return this.nodesById.values().stream();
+    }
+
+    @Override
+    public Stream<Node> roots() {
+        return this.stream()
+                .filter(n -> n.getType().equals(System.STORE_ROOT))
+
+                // check invariants
+                .peek(root -> {
+                    if (root.getPrimaryParentAssoc() != null) {
+                        String msg = String.format("Node %s has type %s, but also has a primary parent %s ?!",
+                                root, root.getType().toPrefixString(), root.getParent());
+                        throw new IllegalStateException(msg);
+                    }
+                });
+    }
+
+    public Optional<Node> getCompanyHome() {
+        return this.roots()
+                .filter(r -> STOREREF_PROT_WORKSPACE.equals(r.getNodeRef().getStoreProtocol()))
+                .filter(r -> STOREREF_ID_SPACESSTORE.equals(r.getNodeRef().getStoreIdentifier()))
+                .findFirst()
+                .flatMap(root -> root.getChildNodeCollection()
+                        .getChild(System.CHILDREN, Application.createQName("company_home")));
+
     }
 }

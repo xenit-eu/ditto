@@ -4,6 +4,7 @@ package eu.xenit.testing.ditto.internal;
 import eu.xenit.testing.ditto.api.data.ContentModel.Content;
 import eu.xenit.testing.ditto.api.data.ContentModel.System;
 import eu.xenit.testing.ditto.api.model.ContentData;
+import eu.xenit.testing.ditto.api.model.ParentChildAssoc;
 import eu.xenit.testing.ditto.api.model.QName;
 import eu.xenit.testing.ditto.internal.DefaultNode.NodeContext;
 import eu.xenit.testing.ditto.internal.content.ContentUrlProviderSpi;
@@ -29,17 +30,31 @@ public class NodeInitializer {
         this.setDefaultContentModelProperties(node);
         this.setAuditableAspectAndProps(node, context);
         this.setContentData(node, context);
+
+        this.setupBiDirectionalParentAssoc(node);
+    }
+
+    private void setupBiDirectionalParentAssoc(DefaultNode node) {
+        ParentChildAssoc parentAssoc = node.getPrimaryParentAssoc();
+        if (parentAssoc == null) {
+            return;
+        }
+
+        parentAssoc.getParent()
+                .getChildNodeCollection()
+                .addAssociation(parentAssoc);
     }
 
     private void setDefaultSystemProperties(DefaultNode node) {
-        // primary node-id is also present as a property
+        // inherited from type sys:base
+        node.getAspects().add(System.REFERENCEABLE);
         node.getProperties().put(System.NODE_DBID, node.getNodeId());
-
-        // noderef properties
         node.getProperties().putIfAbsent(System.STORE_PROTOCOL, node.getNodeRef().getStoreProtocol());
         node.getProperties().putIfAbsent(System.STORE_IDENTIFIER, node.getNodeRef().getStoreIdentifier());
         node.getProperties().putIfAbsent(System.NODE_UUID, node.getNodeRef().getUuid());
 
+        // inherited from type sys:base
+        node.getAspects().add(System.LOCALIZED);
         node.getProperties().putIfAbsent(System.LOCALE, DEFAULT_LOCALE);
     }
 

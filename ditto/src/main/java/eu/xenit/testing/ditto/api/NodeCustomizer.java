@@ -12,8 +12,6 @@ import java.util.function.Consumer;
 
 public interface NodeCustomizer {
 
-    Node build();
-
     NodeReference nodeRef();
 
     Map<QName, Serializable> properties();
@@ -31,15 +29,12 @@ public interface NodeCustomizer {
     NodeCustomizer name(String name);
 
     NodeCustomizer content(String content);
-
     NodeCustomizer content(String content, Charset charset);
-
     NodeCustomizer content(byte[] content);
 
     NodeCustomizer callback(Consumer<Node> callback);
 
     NodeCustomizer createNamedReference(String name);
-
     NodeCustomizer createNamedReference();
 
     String storeRefProtocol();
@@ -55,6 +50,10 @@ public interface NodeCustomizer {
     QName type();
     NodeCustomizer type(String type);
     NodeCustomizer type(QName type);
+
+
+    NodeCustomizer qname(String s);
+    NodeCustomizer qname(QName s);
 
     NodeCustomizer charset(Charset charset);
 
@@ -72,6 +71,7 @@ public interface NodeCustomizer {
     String mimetype();
     NodeCustomizer size(long size);
     long size();
+
 
 
 }
