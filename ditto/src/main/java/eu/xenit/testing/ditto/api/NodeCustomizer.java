@@ -12,9 +12,6 @@ import java.util.function.Consumer;
 
 public interface NodeCustomizer {
 
-    // This should not be part of the public API ?
-    // Node build();
-
     NodeReference nodeRef();
 
     Map<QName, Serializable> properties();

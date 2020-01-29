@@ -17,6 +17,7 @@ class DefaultNodeViewTest {
         assertThat(nodeView.getCompanyHome())
                 .hasValueSatisfying(companyHome -> assertThat(companyHome)
                         .hasNodeId(13)
+                        .hasName("Company Home")
                         .hasType(Content.FOLDER)
                 );
     }

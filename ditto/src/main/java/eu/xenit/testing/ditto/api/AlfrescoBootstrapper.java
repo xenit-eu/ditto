@@ -1,11 +1,11 @@
 package eu.xenit.testing.ditto.api;
 
-import eu.xenit.testing.ditto.api.data.ContentModel;
 import eu.xenit.testing.ditto.api.data.ContentModel.Application;
 import eu.xenit.testing.ditto.api.data.ContentModel.Content;
 import eu.xenit.testing.ditto.api.data.ContentModel.System;
 import eu.xenit.testing.ditto.api.data.ContentModel.User;
 import eu.xenit.testing.ditto.api.model.Node;
+import java.util.function.Consumer;
 
 class AlfrescoBootstrapper<T extends DataSetBuilder> {
 
@@ -55,18 +55,56 @@ class AlfrescoBootstrapper<T extends DataSetBuilder> {
                         node.aspect(Application.UIFACETS);
                         node.property(Application.ICON, "space-icon-default");
                     });
-                    Node dataDictionary = txn.addNode(companyHome, Content.CONTAINS, node -> {
-                        node.name("Data Dictionary");
-                    });
-                    txn.addNode(dataDictionary, node -> {
-                        node.name("Space Templates");
-                    });
+                    Node dataDictionary = txn.addFolder(companyHome, appNode("Data Dictionary", node -> {
+                        node.qname(Application.createQName("dictionary"));
+                        node.mlProperty(Content.DESCRIPTION, "User managed definitions");
+                    }));
+                    txn.addFolder(dataDictionary, appNode("Space Templates", node -> {
+                        node.mlProperty(Content.DESCRIPTION, "Space folder templates");
+                    }));
+                    txn.addFolder(dataDictionary, appNode("Presentation Templates", node -> {
+                        node.qname(Application.createQName("content_templates"));
+                    }));
+                    txn.addFolder(dataDictionary, appNode("Email Templates"));
 
-                    txn.skipToNodeId(26);
+
+                    txn.skipToNodeId(25);
+                    txn.addFolder(companyHome, node -> {
+                        node.name("Guest Home");
+                    });
                     txn.addNode(companyHome, node -> node.name("User Homes"));
                 });
 
         return builder;
+    }
+
+    private Consumer<NodeCustomizer> appNode(String name) {
+        return appNode(name, node -> {});
+    }
+
+    private Consumer<NodeCustomizer> appNode(String name, Consumer<NodeCustomizer> callback) {
+        return node -> {
+
+            node.name(name);
+            node.qname(Application.createQName(name.toLowerCase().replace(" ","_")));
+
+            node.aspect(Content.TITLED);
+            node.mlProperty(Content.TITLE, name);
+            node.mlProperty(Content.DESCRIPTION, capitalize(name));
+
+            node.aspect(Application.UIFACETS);
+            node.property(Application.ICON, "space-icon-default");
+
+            callback.accept(node);
+        };
+    }
+
+    public static String capitalize(String str) {
+        if(str == null || str.isEmpty()) {
+            return str;
+        }
+
+        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
     }
 
 }

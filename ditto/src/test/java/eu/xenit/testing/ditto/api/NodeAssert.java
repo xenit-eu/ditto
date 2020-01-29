@@ -54,13 +54,20 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
         return myself;
     }
 
-    public NodeAssert containsChildsOf(QName assocType, Node ... nodes) {
+    public NodeAssert containsChildsOf(QName assocType, Node... nodes) {
         assertThat(actual.getChildNodeCollection().getChilds(assocType))
                 .contains(nodes);
 
         return myself;
     }
 
-//    public NodeAssert ChildAssocs(C) {
-//    }
+    public NodeAssert containsChild(QName assocType, QName childQName) {
+        assertThat(actual.getChildNodeCollection().getChild(assocType, childQName))
+                .as("contains child with relation %s and name %s",
+                        assocType.toPrefixString(), childQName.toPrefixString())
+                .isPresent();
+
+        return myself;
+    }
+
 }
