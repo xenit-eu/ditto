@@ -82,8 +82,6 @@ public class NodeInitializer {
         node.getProperties().putIfAbsent(Content.CREATED, context.getInstant().toString());
         node.getProperties().putIfAbsent(Content.MODIFIER, "System");
         node.getProperties().putIfAbsent(Content.MODIFIED, context.getInstant().toString());
-
-        node.getProperties().putIfAbsent(Content.OWNER, node.getProperties().get(Content.CREATOR));
     }
 
     private void setContentData(DefaultNode node, NodeContext context) {
