@@ -41,10 +41,10 @@ public class RecordLog<TAggregate> {
         Objects.requireNonNull(parent, "parent is required");
         Objects.requireNonNull(stream, "stream is required");
 
-        return stream.reduce(parent, RecordLogEntry::new, PARALLEL_STREAMS_NOT_SUPPORTED);
+        return stream.reduce(parent, RecordLogEntry<TAggregate>::new, PARALLEL_STREAMS_NOT_SUPPORTED);
     }
 
-    private static final BinaryOperator<RecordLogEntry> PARALLEL_STREAMS_NOT_SUPPORTED = (l1, l2) -> {
+    private final BinaryOperator<RecordLogEntry<TAggregate>> PARALLEL_STREAMS_NOT_SUPPORTED = (l1, l2) -> {
         throw new UnsupportedOperationException("parallel streams not supported");
     };
 
