@@ -30,7 +30,7 @@ public class DefaultNodeProperties implements NodeProperties {
 
     @Override
     public Optional<ContentData> getContentData() {
-        return Optional.ofNullable((ContentData) this.get(Content.CONTENT));
+        return this.get(Content.CONTENT).map(ContentData.class::cast);
     }
 
     @Override
@@ -49,8 +49,8 @@ public class DefaultNodeProperties implements NodeProperties {
     }
 
     @Override
-    public Serializable get(QName key) {
-        return this.properties.get(key);
+    public Optional<Serializable> get(QName key) {
+        return Optional.ofNullable(this.properties.get(key));
     }
 
     public Serializable put(QName s, Serializable value) {
@@ -91,15 +91,15 @@ public class DefaultNodeProperties implements NodeProperties {
     }
 
     @Override
-    public String getMLText(QName key, Locale locale) {
-        Serializable mlTextValue = get(key);
-        if (mlTextValue == null) {
-            return null;
-        }
-        if (!(mlTextValue instanceof MLText)) {
-            throw new IllegalStateException(String.format("Property '%s' is not of type d:mltext", mlTextValue));
-        }
-        return ((MLText) mlTextValue).get(locale);
+    public Optional<String> getMLText(QName key, Locale locale) {
+        return get(key).map(value -> {
+            if (value instanceof MLText) {
+                MLText mlValue = (MLText) value;
+                return mlValue.get(locale);
+            }
+            String msg = String.format("Property '%s' is not of type d:mltext", get(key));
+            throw new IllegalStateException(msg);
+        });
     }
 
 }

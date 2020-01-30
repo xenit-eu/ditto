@@ -16,7 +16,7 @@ public interface NodeProperties {
     boolean isEmpty();
     boolean containsKey(QName key);
 
-    Serializable get(QName key);
+    Optional<Serializable> get(QName key);
     Serializable getOrDefault(QName key, Serializable defaultValue);
 
     Set<QName> keySet();
@@ -27,7 +27,7 @@ public interface NodeProperties {
 
     Optional<ContentData> getContentData();
 
-    String getMLText(QName key, Locale locale);
+    Optional<String> getMLText(QName key, Locale locale);
 
 
     class Property {

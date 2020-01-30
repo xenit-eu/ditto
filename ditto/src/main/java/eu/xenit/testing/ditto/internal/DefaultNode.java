@@ -100,8 +100,10 @@ public class DefaultNode implements Node {
 
     @Override
     public String getName() {
-        String name = (String) this.getProperties().get(Content.NAME);
-        return name != null ? name : this.getNodeRef().getUuid();
+        return this.getProperties()
+                .get(Content.NAME)
+                .map(Object::toString)
+                .orElse(this.getNodeRef().getUuid());
     }
 
 

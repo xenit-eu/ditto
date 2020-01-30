@@ -43,15 +43,17 @@ class DefaultNodeTest {
                 .build();
 
         assertThat(node.getProperties().get(Content.TITLE))
-                .isExactlyInstanceOf(MLText.class)
-                .satisfies(val -> {
-                    MLText mlText = (MLText) val;
-                    assertThat(mlText.get(Locale.ITALIAN)).isEqualTo(title);
-                    assertThat(mlText.get(Locale.CHINESE)).isNull();
-                });
-        assertThat(node.getProperties().getMLText(Content.TITLE, Locale.ITALIAN)).isEqualTo(title);
-        assertThat(node.getProperties().getMLText(Content.TITLE, Locale.CHINA)).isNull();
-        assertThat(node.getProperties().get(Content.NAME)).isEqualTo(name);
+                .isPresent()
+                .hasValueSatisfying(value -> assertThat(value)
+                        .isExactlyInstanceOf(MLText.class)
+                        .satisfies(val -> {
+                            MLText mlText = (MLText) val;
+                            assertThat(mlText.get(Locale.ITALIAN)).isEqualTo(title);
+                            assertThat(mlText.get(Locale.CHINESE)).isNull();
+                        }));
+        assertThat(node.getProperties().getMLText(Content.TITLE, Locale.ITALIAN)).hasValue(title);
+        assertThat(node.getProperties().getMLText(Content.TITLE, Locale.CHINA)).isNotPresent();
+        assertThat(node.getProperties().get(Content.NAME)).hasValue(name);
 
     }
 
