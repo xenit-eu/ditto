@@ -1,25 +1,42 @@
 package eu.xenit.testing.ditto.api.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Objects;
 
-public class MLText extends HashMap<Locale, String> {
+public class MLText implements Serializable {
 
-    private MLText(Locale locale, String value) {
-        super();
-        super.put(locale, value);
+    private LinkedHashMap<Locale, String> data = new LinkedHashMap<>();
+
+    private final Locale defaultLocale;
+
+    public static MLText create(Locale locale, String value) {
+        Objects.requireNonNull(locale, "Argument 'locale' is required");
+        return new MLText(locale, value);
     }
 
-    public MLText addValue(Locale locale, String value) {
-        put(locale, value);
+    private MLText(Locale locale, String value) {
+        this.data.put(locale, value);
+        this.defaultLocale = locale;
+    }
+
+    public MLText put(Locale locale, String value) {
+        this.data.put(locale, value);
         return this;
     }
 
-    public String getValue(Locale locale) {
-        return get(locale);
+    public String get(Locale local) {
+        return this.data.get(local);
     }
 
-    public static MLText create(Locale locale, String value) {
-        return new MLText(locale, value);
+    public String get() {
+        return this.get(this.defaultLocale);
+    }
+
+    @Override
+    public String toString() {
+        return this.get();
     }
 }

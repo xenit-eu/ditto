@@ -34,7 +34,7 @@ public interface BootstrapConfiguration {
 
         private Instant bootstrapInstant = Instant.now();
         private Set<Namespace> namespaces = new HashSet<>();
-        private Locale defaultLocale = Locale.ENGLISH;
+        private Locale defaultLocale = Locale.US;
 
         private DefaultBootstrapConfiguration()
         {
