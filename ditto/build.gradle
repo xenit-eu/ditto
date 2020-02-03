@@ -1,15 +1,15 @@
 plugins {
-    id 'java'
+    id 'java-library'
     id 'maven-publish'
 }
 
-sourceCompatibility = '1.8'
+description = 'Provides an API to build test data-sets and test doubles for Alfresco remote api clients'
 
 dependencies {
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
-    implementation ("org.slf4j:slf4j-api:${slf4jVersion}") {
+    implementation("org.slf4j:slf4j-api:${slf4jVersion}") {
         force = true
         because 'guru.nidi:code-assert would pull in 1.8.0-beta2 in test-runtime-classpath'
     }
@@ -27,25 +27,12 @@ test {
     useJUnitPlatform()
 }
 
+apply from: "${rootProject.projectDir}/publish.gradle"
+
 publishing {
     publications {
-        jar(MavenPublication) {
+        maven(MavenPublication) {
             from components.java
-        }
-    }
-    repositories {
-        maven {
-            name = 'Xenit'
-            if (version.endsWith('SNAPSHOT')) {
-                url = 'https://artifactory.xenit.eu/artifactory/libs-snapshot-local'
-            } else {
-                url = 'https://artifactory.xenit.eu/artifactory/libs-release-local'
-            }
-
-            credentials {
-                username property("eu.xenit.artifactory.username")
-                password property("eu.xenit.artifactory.password")
-            }
         }
     }
 }
