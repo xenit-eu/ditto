@@ -3,6 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
+sourceCompatibility = '1.8'
 description = 'Provides an API to build test data-sets and test doubles for Alfresco remote api clients'
 
 dependencies {
