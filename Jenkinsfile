@@ -37,6 +37,19 @@ pipeline {
                 }
             }
         }
+
+        stage('Release to Maven Central') {
+            when {
+                anyOf {
+                    branch "release*"
+                }
+            }
+            steps {
+                script {
+                    sh "./gradlew closeAndReleaseRepository"
+                }
+            }
+        }
     }
 
     post {
