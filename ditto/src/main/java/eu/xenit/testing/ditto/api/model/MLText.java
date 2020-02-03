@@ -4,7 +4,12 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Stream;
+import lombok.Data;
 
 public class MLText implements Serializable {
 
@@ -39,4 +44,9 @@ public class MLText implements Serializable {
     public String toString() {
         return this.get();
     }
+
+    public Stream<Entry<Locale, String>> stream() {
+        return this.data.entrySet().stream();
+    }
+
 }
