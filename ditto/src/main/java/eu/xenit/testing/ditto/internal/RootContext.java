@@ -9,6 +9,7 @@ import eu.xenit.testing.ditto.internal.content.FileSystemContentUrlProvider;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -33,9 +34,9 @@ public class RootContext {
     {
         Objects.requireNonNull(bootstrapConfig, "Argument 'bootstrapConfig' is required");
 
-        this.bootstrapInstant = bootstrapConfig.getBootstrapInstant();
+        this.bootstrapInstant = bootstrapConfig.getBootstrapInstant().truncatedTo(ChronoUnit.MILLIS);
         this.defaultLocale = bootstrapConfig.getDefaultLocale();
-        this.clock =  Clock.fixed(bootstrapInstant, ZoneId.of("UTC"));
+        this.clock =  Clock.fixed(this.bootstrapInstant, ZoneId.of("UTC"));
 
 
         bootstrapConfig.getNamespaces().forEach(this.dictionary::registerNamespace);
