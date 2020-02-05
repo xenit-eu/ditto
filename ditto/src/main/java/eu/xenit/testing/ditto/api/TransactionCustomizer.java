@@ -17,4 +17,6 @@ public interface TransactionCustomizer extends ContentServiceConfigurer<Transact
     Node addDocument(Node parent, Consumer<NodeCustomizer> callback);
     Node addFolder(Node parent, Consumer<NodeCustomizer> callback);
 
+    Node getNodeByNodeRef(String nodeRef);
+
 }
