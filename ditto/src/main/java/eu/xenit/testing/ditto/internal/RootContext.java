@@ -3,6 +3,7 @@ package eu.xenit.testing.ditto.internal;
 import eu.xenit.testing.ditto.api.BootstrapConfiguration;
 import eu.xenit.testing.ditto.api.data.ContentModel.Content;
 import eu.xenit.testing.ditto.api.model.Node;
+import eu.xenit.testing.ditto.api.model.NodeReference;
 import eu.xenit.testing.ditto.api.model.QName;
 import eu.xenit.testing.ditto.internal.content.ContentUrlProviderSpi;
 import eu.xenit.testing.ditto.internal.content.FileSystemContentUrlProvider;
@@ -10,6 +11,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -110,11 +112,22 @@ public class RootContext {
         this.namedReferences.put(name, node);
     }
 
-    public QName resolveQName(String qname) {
+    QName resolveQName(String qname) {
         return this.dictionary.resolveQName(qname);
     }
 
-    public QName getDefaultChildAssocType() {
+    QName getDefaultChildAssocType() {
         return Content.CONTAINS;
+    }
+
+    private Map<NodeReference, Node> nodes = new HashMap<>();
+
+    void onNodeSaved(Node node) {
+        Objects.requireNonNull(node, "Argument 'node' is required");
+        this.nodes.put(node.getNodeRef(), node);
+    }
+
+    Node getNodeByNodeRef(NodeReference nodeRef) {
+        return nodes.get(nodeRef);
     }
 }

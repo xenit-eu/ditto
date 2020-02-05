@@ -165,12 +165,16 @@ public class DefaultNode implements Node {
         }
 
 
-        public void createNamedReference(String name, Node node) {
+        void createNamedReference(String name, Node node) {
             this.txnContext.createNamedReference(name, node);
         }
 
-        public QName resolveQName(String qname) {
+        QName resolveQName(String qname) {
             return this.txnContext.resolveQName(qname);
+        }
+
+        void onNodeSaved(DefaultNode node) {
+            this.txnContext.onNodeSaved(node);
         }
     }
 
@@ -207,6 +211,8 @@ public class DefaultNode implements Node {
             DefaultNode node = new DefaultNode(this);
 
             this.callbacks.forEach(callback -> callback.accept(node));
+
+            this.context.onNodeSaved(node);
 
             return node;
         }

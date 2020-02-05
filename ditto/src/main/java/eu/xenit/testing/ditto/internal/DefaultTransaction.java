@@ -109,6 +109,14 @@ public class DefaultTransaction implements Transaction {
         public QName getDefaultChildAssocType() {
             return this.rootContext.getDefaultChildAssocType();
         }
+
+        public Node getNodeByNodeRef(NodeReference nodeRef) {
+            return this.rootContext.getNodeByNodeRef(nodeRef);
+        }
+
+        void onNodeSaved(Node node) {
+            this.rootContext.onNodeSaved(node);
+        }
     }
 
     public static class TransactionBuilder implements TransactionCustomizer {
@@ -189,6 +197,11 @@ public class DefaultTransaction implements Transaction {
                 node.type(ContentModel.Content.FOLDER);
                 callback.accept(node);
             });
+        }
+
+        @Override
+        public Node getNodeByNodeRef(String nodeRef) {
+            return this.context.getNodeByNodeRef(NodeReference.parse(nodeRef));
         }
 
         @Override

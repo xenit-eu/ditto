@@ -28,7 +28,22 @@ class DefaultTransactionTest {
         assertThat(txn.getUpdated().stream().map(Node::getName))
                 .containsSequence("1", "2", "3", "4", "5");
 
+    }
 
+    @Test
+    void testGetNodeByNodeRef_fromTxnCustomizer() {
+        MockRootContext root = new MockRootContext();
 
+        TransactionBuilder txn1 = DefaultTransaction.builder(root);
+        txn1.addNode(node -> {
+            node.name("foo.doc");
+            node.uuid("abc-123");
+        });
+
+        TransactionBuilder txn2 = DefaultTransaction.builder(root);
+        Node node = txn2.getNodeByNodeRef("workspace://SpacesStore/abc-123");
+
+        assertThat(node).isNotNull();
+        assertThat(node.getName()).isEqualTo("foo.doc");
     }
 }
