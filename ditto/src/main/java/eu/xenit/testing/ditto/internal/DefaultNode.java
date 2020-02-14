@@ -20,6 +20,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -69,6 +70,9 @@ public class DefaultNode implements Node {
     private final DefaultParentChildNodeCollection childNodeCollection;
 
     @Getter
+    private final DefaultParentChildNodeCollection parentNodeCollection;
+
+    @Getter
     private final Set<QName> aspects;
 
     private static NodeInitializer init = new NodeInitializer();
@@ -86,8 +90,11 @@ public class DefaultNode implements Node {
         if (builder.context.getParent() != null && builder.context.getParentChildAssocType() != null) {
             this.primaryParentAssoc = new DefaultParentChildAssoc(builder.context.getParent(),
                     builder.context.getParentChildAssocType(), this, true);
+            this.parentNodeCollection = new DefaultParentChildNodeCollection(primaryParentAssoc.getParent(),
+                    Collections.singletonList(primaryParentAssoc));
         } else {
             this.primaryParentAssoc = null;
+            this.parentNodeCollection = null;
         }
 
         init.accept(this, builder.context);
