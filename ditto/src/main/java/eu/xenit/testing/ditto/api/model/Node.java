@@ -36,6 +36,7 @@ public interface Node {
     }
 
     ParentChildNodeCollection getChildNodeCollection();
+    ParentChildNodeCollection getParentNodeCollection();
 
     interface Filters {
         static <T> Predicate<T> always(boolean value) {
