@@ -5,10 +5,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import eu.xenit.testing.ditto.api.AlfrescoDataSet;
+import eu.xenit.testing.ditto.api.NodeView;
 import eu.xenit.testing.ditto.api.data.ContentModel.Content;
 import eu.xenit.testing.ditto.api.model.MLText;
+import eu.xenit.testing.ditto.api.model.Namespace;
 import eu.xenit.testing.ditto.api.model.Node;
 import eu.xenit.testing.ditto.api.model.ParentChildNodeCollection;
+import eu.xenit.testing.ditto.api.model.QName;
 import eu.xenit.testing.ditto.internal.DefaultTransaction.TransactionContext;
 import java.time.Instant;
 import java.util.Locale;
@@ -97,6 +100,56 @@ class DefaultNodeTest {
                                 .get(0).getParent()).isEqualTo(parents[0]);
                     });
         });
+    }
+
+    @Test
+    void peerAssociation() {
+        Namespace NAMESPACE = Namespace.createNamespace("myCustomSpace", "mcs");
+        String localName = "myLocalName";
+        QName myQName = QName.createQName(NAMESPACE, localName);
+        final Node[] nodes = new Node[2];
+        AlfrescoDataSet dataSet = AlfrescoDataSet
+                .bootstrapAlfresco(Instant.now())
+                .skipToTransaction(123L)
+                .addTransaction(txn -> {
+                    nodes[0] = txn.addNode(doc -> {
+                        doc.type(Content.FOLDER);
+                        doc.name("foo");
+                        doc.property("cm:description", "Folder description");
+                    });
+                })
+                .skipToTransaction(456L)
+                .addTransaction((txn -> {
+                    nodes[1] = txn.addNode(doc -> {
+                        doc.type(Content.CONTENT);
+                        doc.name("bar.txt");
+                        doc.content("bar");
+                        doc.property("cm:description", "Document description");
+                        doc.sourceAssociation(nodes[0], myQName);
+                    });
+                }))
+                .build();
+        NodeView nodeView = dataSet.getNodeView();
+        Optional<Node> node1 = nodeView.getNode(nodes[1].getNodeId());
+        assertThat(node1.isPresent()).isTrue();
+        assertThat(node1.get().getSourceAssociationCollection().getAssociations())
+                .hasOnlyOneElementSatisfying(assoc -> {
+                  assertThat(assoc.getSourceNode().getNodeRef()).isEqualTo(nodes[0].getNodeRef());
+                    assertThat(assoc.getTargetNode().getNodeRef()).isEqualTo(nodes[1].getNodeRef());
+                    assertThat(assoc.getSourceNode().getType()).isEqualTo(nodes[0].getType());
+                    assertThat(assoc.getTargetNode().getType()).isEqualTo(nodes[1].getType());
+                    assertThat(assoc.getAssocTypeQName()).isEqualTo(myQName);
+                });
+        Optional<Node> node0 = nodeView.getNode(nodes[0].getNodeId());
+        assertThat(node0.isPresent()).isTrue();
+        assertThat(node0.get().getTargetAssociationCollection().getAssociations())
+                .hasOnlyOneElementSatisfying(assoc -> {
+                    assertThat(assoc.getSourceNode().getNodeRef()).isEqualTo(nodes[0].getNodeRef());
+                    assertThat(assoc.getTargetNode().getNodeRef()).isEqualTo(nodes[1].getNodeRef());
+                    assertThat(assoc.getSourceNode().getType()).isEqualTo(nodes[0].getType());
+                    assertThat(assoc.getTargetNode().getType()).isEqualTo(nodes[1].getType());
+                    assertThat(assoc.getAssocTypeQName()).isEqualTo(myQName);
+                });
     }
 
 

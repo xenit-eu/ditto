@@ -2,9 +2,11 @@ package eu.xenit.testing.ditto.api;
 
 import eu.xenit.testing.ditto.api.model.Node;
 import eu.xenit.testing.ditto.api.model.NodeReference;
+import eu.xenit.testing.ditto.api.model.PeerAssoc;
 import eu.xenit.testing.ditto.api.model.QName;
 import java.io.Serializable;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +27,15 @@ public interface NodeCustomizer {
     NodeCustomizer aspects(Set<String> aspects);
     NodeCustomizer aspect(String aspect);
     NodeCustomizer aspect(QName aspect);
+
+    List<PeerAssoc> sourceAssociations();
+    NodeCustomizer sourceAssociation(PeerAssoc sourceAssociation);
+    NodeCustomizer sourceAssociation(Node sourceNode, QName associationTypeQName);
+    NodeCustomizer sourceAssociations(List<PeerAssoc> sourceAssociations);
+    List<PeerAssoc> targetAssociations();
+    NodeCustomizer targetAssociation(PeerAssoc targetAssociation);
+    NodeCustomizer targetAssociation(Node targetNode, QName associationTypeQName);
+    NodeCustomizer targetAssociations(List<PeerAssoc> targetAssociations);
 
     NodeCustomizer name(String name);
 

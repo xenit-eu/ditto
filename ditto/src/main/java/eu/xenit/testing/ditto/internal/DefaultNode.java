@@ -9,6 +9,9 @@ import eu.xenit.testing.ditto.api.model.MLText;
 import eu.xenit.testing.ditto.api.model.Node;
 import eu.xenit.testing.ditto.api.model.NodeReference;
 import eu.xenit.testing.ditto.api.model.ParentChildAssoc;
+import eu.xenit.testing.ditto.api.model.PeerAssoc;
+import eu.xenit.testing.ditto.api.model.PeerAssocCollection;
+import eu.xenit.testing.ditto.api.model.PeerAssocCollection.Type;
 import eu.xenit.testing.ditto.api.model.QName;
 import eu.xenit.testing.ditto.internal.DefaultTransaction.TransactionContext;
 import eu.xenit.testing.ditto.internal.content.ContentContext;
@@ -73,6 +76,12 @@ public class DefaultNode implements Node {
     private final DefaultParentChildNodeCollection parentNodeCollection;
 
     @Getter
+    private final PeerAssocCollection sourceAssociationCollection;
+
+    @Getter
+    private final PeerAssocCollection targetAssociationCollection;
+
+    @Getter
     private final Set<QName> aspects;
 
     private static NodeInitializer init = new NodeInitializer();
@@ -86,6 +95,8 @@ public class DefaultNode implements Node {
         this.qName = builder.qname != null ? builder.qname : Content.createQName(this.getName());
         this.aspects = new HashSet<>(builder.aspects);
         this.childNodeCollection = new DefaultParentChildNodeCollection(this);
+        this.sourceAssociationCollection = new DefaultPeerAssocCollection(Type.SOURCE,builder.sourceAssociations);
+        this.targetAssociationCollection = new DefaultPeerAssocCollection(Type.TARGET,builder.targetAssociations);
 
         if (builder.context.getParent() != null && builder.context.getParentChildAssocType() != null) {
             this.primaryParentAssoc = new DefaultParentChildAssoc(builder.context.getParent(),
@@ -112,7 +123,6 @@ public class DefaultNode implements Node {
                 .map(Object::toString)
                 .orElse(this.getNodeRef().getUuid());
     }
-
 
     @Override
     public String toString() {
@@ -356,6 +366,55 @@ public class DefaultNode implements Node {
         public NodeBuilder aspect(String aspect) {
             Objects.requireNonNull(aspect, "Argument 'aspect' is required");
             this.aspects.add(this.context.resolveQName(aspect));
+            return this;
+        }
+
+        @Getter
+        List<PeerAssoc> sourceAssociations = new ArrayList<>();
+
+        @Override
+        public NodeCustomizer sourceAssociation(PeerAssoc sourceAssociation) {
+            Objects.requireNonNull(sourceAssociation, "Argument 'sourceAssociation' is required");
+            sourceAssociations.add(sourceAssociation);
+            return this;
+        }
+
+        @Override
+        public NodeCustomizer sourceAssociation(Node sourceNode, QName associationTypeQName) {
+            Objects.requireNonNull(sourceNode, "Argument 'sourceNode' is required");
+            Objects.requireNonNull(associationTypeQName, "Argument 'associationTypeQName' is required");
+            sourceAssociations.add(new DefaultPeerAssoc(sourceNode, new DefaultNode(this), associationTypeQName));
+            return this;
+        }
+
+        @Override
+        public NodeCustomizer sourceAssociations(List<PeerAssoc> sourceAssociations) {
+            Objects.requireNonNull(sourceAssociations, "Argument 'sourceAssociations' is required");
+            this.sourceAssociations = sourceAssociations;
+            return this;
+        }
+
+        @Getter
+        List<PeerAssoc> targetAssociations = new ArrayList<>();
+
+        @Override
+        public NodeCustomizer targetAssociation(PeerAssoc targetAssociation) {
+            Objects.requireNonNull(targetAssociation, "Argument 'targetAssociation' is required");
+            targetAssociations.add(targetAssociation);
+            return this;
+        }
+
+        @Override
+        public NodeCustomizer targetAssociation(Node targetNode, QName associationTypeQName) {
+            Objects.requireNonNull(targetNode, "Argument 'targetNode' is required");
+            Objects.requireNonNull(associationTypeQName, "Argument 'associationTypeQName' is required");
+            sourceAssociations.add(new DefaultPeerAssoc(new DefaultNode(this), targetNode, associationTypeQName));
+            return this;
+        }
+
+        @Override
+        public NodeCustomizer targetAssociations(List<PeerAssoc> targetAssociations) {
+            this.targetAssociations = targetAssociations;
             return this;
         }
 
