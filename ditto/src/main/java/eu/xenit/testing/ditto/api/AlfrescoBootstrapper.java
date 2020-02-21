@@ -34,6 +34,8 @@ class AlfrescoBootstrapper<T extends DataSetBuilder> {
 
             txn.addNode(people, System.CHILDREN, node -> {
                 node.type(User.USER);
+                node.storeRefIdentifier("alfrescoUserStore");
+                node.storeRefProtocol("user");
                 node.property(User.USERNAME, "admin");
             });
         });
