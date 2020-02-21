@@ -1,8 +1,7 @@
 package eu.xenit.testing.ditto.api.model;
 
-public interface ParentChildAssoc {
+public interface ParentChildAssoc extends Association{
 
-    QName getAssocTypeQName();
     Node getParent();
     Node getChild();
 

@@ -5,6 +5,7 @@ import eu.xenit.testing.ditto.api.data.ContentModel.Content;
 import eu.xenit.testing.ditto.api.data.ContentModel.System;
 import eu.xenit.testing.ditto.api.model.ContentData;
 import eu.xenit.testing.ditto.api.model.ParentChildAssoc;
+import eu.xenit.testing.ditto.api.model.PeerAssoc;
 import eu.xenit.testing.ditto.api.model.QName;
 import eu.xenit.testing.ditto.internal.DefaultNode.NodeContext;
 import eu.xenit.testing.ditto.internal.content.ContentUrlProviderSpi;
@@ -15,8 +16,10 @@ import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class NodeInitializer {
 
@@ -32,6 +35,7 @@ public class NodeInitializer {
         this.setContentData(node, context);
 
         this.setupBiDirectionalParentAssoc(node);
+        this.setupBiDrectionalPeerAssocs(node);
     }
 
     private void setupBiDirectionalParentAssoc(DefaultNode node) {
@@ -43,6 +47,23 @@ public class NodeInitializer {
         parentAssoc.getParent()
                 .getChildNodeCollection()
                 .addAssociation(parentAssoc);
+    }
+
+    private void setupBiDrectionalPeerAssocs(DefaultNode node) {
+        // node as the target of associations
+        // put assocs from the sourceAssocsCollection on the targetAssocsCollection of the source node
+        List<PeerAssoc> sourceAssociations = node.getSourceAssociationCollection().getAssociations().collect(
+                Collectors.toList());
+        for (PeerAssoc assoc : sourceAssociations) {
+            assoc.getSourceNode().getTargetAssociationCollection().addAssociation(assoc);
+        }
+        // node as the source of associations
+        // put assocs from the targetAssocsCollection on the sourceAssocsCollection of the target node
+        List<PeerAssoc> targetAssociations = node.getTargetAssociationCollection().getAssociations().collect(
+                Collectors.toList());
+        for (PeerAssoc assoc : targetAssociations) {
+            assoc.getTargetNode().getSourceAssociationCollection().addAssociation(assoc);
+        }
     }
 
     private void setDefaultSystemProperties(DefaultNode node) {
@@ -104,7 +125,7 @@ public class NodeInitializer {
                 // This means content should be "random", but stable
                 long seed = node.getNodeId();
                 contentDelegate = () -> {
-                    String fakeContent = "foo with seed: '"+ seed + "'";
+                    String fakeContent = "foo with seed: '" + seed + "'";
                     Charset encoding = builder.getEncodingOrDefault();
                     return new ByteArrayInputStream(fakeContent.getBytes(encoding));
                 };
