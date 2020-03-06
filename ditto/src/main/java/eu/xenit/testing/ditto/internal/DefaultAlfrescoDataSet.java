@@ -2,13 +2,13 @@ package eu.xenit.testing.ditto.internal;
 
 import eu.xenit.testing.ditto.api.AlfrescoDataSet;
 import eu.xenit.testing.ditto.api.ContentView;
-import eu.xenit.testing.ditto.api.model.Node;
 import eu.xenit.testing.ditto.api.NodeView;
-import eu.xenit.testing.ditto.api.model.Transaction;
 import eu.xenit.testing.ditto.api.TransactionView;
-import eu.xenit.testing.ditto.internal.mvcc.Cursor;
-import eu.xenit.testing.ditto.internal.mvcc.RecordLog;
-import eu.xenit.testing.ditto.internal.mvcc.RecordLogEntry;
+import eu.xenit.testing.ditto.api.model.Node;
+import eu.xenit.testing.ditto.api.model.Transaction;
+import eu.xenit.testing.ditto.internal.record.Cursor;
+import eu.xenit.testing.ditto.internal.record.RecordLog;
+import eu.xenit.testing.ditto.internal.record.RecordLogEntry;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;

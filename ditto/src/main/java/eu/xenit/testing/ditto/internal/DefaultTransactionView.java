@@ -2,8 +2,8 @@ package eu.xenit.testing.ditto.internal;
 
 import eu.xenit.testing.ditto.api.model.Transaction;
 import eu.xenit.testing.ditto.api.TransactionView;
-import eu.xenit.testing.ditto.internal.mvcc.Cursor;
-import eu.xenit.testing.ditto.internal.mvcc.RecordLogEntry;
+import eu.xenit.testing.ditto.internal.record.Cursor;
+import eu.xenit.testing.ditto.internal.record.RecordLogEntry;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.Optional;

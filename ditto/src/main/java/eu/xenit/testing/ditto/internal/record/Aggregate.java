@@ -1,4 +1,4 @@
-package eu.xenit.testing.ditto.internal.mvcc;
+package eu.xenit.testing.ditto.internal.record;
 
 public interface Aggregate {
 

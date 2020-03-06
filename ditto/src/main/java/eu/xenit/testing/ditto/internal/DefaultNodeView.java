@@ -3,16 +3,14 @@ package eu.xenit.testing.ditto.internal;
 import static eu.xenit.testing.ditto.api.model.NodeReference.STOREREF_ID_SPACESSTORE;
 import static eu.xenit.testing.ditto.api.model.NodeReference.STOREREF_PROT_WORKSPACE;
 
-import eu.xenit.testing.ditto.api.data.ContentModel;
 import eu.xenit.testing.ditto.api.data.ContentModel.Application;
-import eu.xenit.testing.ditto.api.data.ContentModel.Content;
 import eu.xenit.testing.ditto.api.data.ContentModel.System;
 import eu.xenit.testing.ditto.api.model.Node;
 import eu.xenit.testing.ditto.api.NodeView;
 import eu.xenit.testing.ditto.api.model.Transaction;
 import eu.xenit.testing.ditto.api.model.NodeReference;
-import eu.xenit.testing.ditto.internal.mvcc.Cursor;
-import eu.xenit.testing.ditto.internal.mvcc.RecordLogEntry;
+import eu.xenit.testing.ditto.internal.record.Cursor;
+import eu.xenit.testing.ditto.internal.record.RecordLogEntry;
 import eu.xenit.testing.ditto.util.Assert;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
