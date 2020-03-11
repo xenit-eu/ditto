@@ -1,10 +1,12 @@
 package eu.xenit.testing.ditto.internal;
 
+import static eu.xenit.testing.ditto.internal.DefaultParentChildNodeCollectionTest.node;
 import static eu.xenit.testing.ditto.internal.DittoAssertions.assertThat;
 
 import eu.xenit.testing.ditto.api.data.ContentModel.Content;
 import eu.xenit.testing.ditto.api.model.Node;
 import eu.xenit.testing.ditto.api.model.QName;
+import eu.xenit.testing.ditto.api.model.Transaction;
 import eu.xenit.testing.ditto.internal.DefaultTransaction.TransactionContext;
 import org.junit.jupiter.api.Test;
 
@@ -14,8 +16,9 @@ public class NodeInitializerTests {
 
     @Test
     void testBiDirectionalParentBinding() {
-        Node parent = node(null, null);
-        DefaultNode child = node(parent, Content.CONTAINS);
+        RootContext ctx = new MockRootContext();
+        Node parent = NodeTestUtil.node(ctx, null, null);
+        Node child = NodeTestUtil.node(ctx, parent, Content.CONTAINS);
 
         assertThat(child)
                 .hasParent(p -> p
@@ -23,9 +26,5 @@ public class NodeInitializerTests {
                         .containsChildsOf(Content.CONTAINS, child));
     }
 
-    public static DefaultNode node(Node parent, QName assocQName) {
 
-        TransactionContext txn = new TransactionContext(ctx);
-        return DefaultNode.builder(txn, parent, assocQName).build();
-    }
 }

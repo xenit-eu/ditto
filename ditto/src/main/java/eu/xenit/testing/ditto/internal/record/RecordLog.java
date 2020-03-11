@@ -1,17 +1,26 @@
 package eu.xenit.testing.ditto.internal.record;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
 import lombok.Data;
+import lombok.Getter;
 
-@Data
 public class RecordLog<TAggregate> {
 
+    @Getter
     private final RecordLogEntry<TAggregate> root;
 
+    private final AtomicLong recordSeq = new AtomicLong(0);
+
+
     public RecordLog() {
-        this.root = new RecordLogEntry<>();
+        this.root = new RecordLogEntry<>(this);
+    }
+
+    long nextId() {
+        return this.recordSeq.incrementAndGet();
     }
 
     /**
@@ -21,10 +30,18 @@ public class RecordLog<TAggregate> {
      * this like a series of version control commits, starting from scratch.
      *
      * @param stream the stream of data to capture in the log
+     * @param callback is a callback which should process the contents of this element
      * @return the head entry
      */
-    public RecordLogEntry<TAggregate> process(Stream<TAggregate> stream) {
-        return this.process(this.root, stream);
+    public RecordLogEntry<TAggregate> process(Stream<TAggregate> stream, RecordDataProcessor<TAggregate> callback) {
+        return this.process(this.root, stream, callback);
+    }
+
+    /**
+     * Process a single transaction
+     */
+    public RecordLogEntry<TAggregate> process(TAggregate element, RecordDataProcessor<TAggregate> callback) {
+        return this.process(Stream.of(element), callback);
     }
 
     /**
@@ -37,11 +54,13 @@ public class RecordLog<TAggregate> {
      * @param stream the stream of data to capture in the log
      * @return the head entry
      */
-    public RecordLogEntry<TAggregate> process(RecordLogEntry<TAggregate> parent, Stream<TAggregate> stream) {
+    public RecordLogEntry<TAggregate> process(RecordLogEntry<TAggregate> parent, Stream<TAggregate> stream,
+            RecordDataProcessor<TAggregate> callback) {
         Objects.requireNonNull(parent, "parent is required");
         Objects.requireNonNull(stream, "stream is required");
 
-        return stream.reduce(parent, RecordLogEntry<TAggregate>::new, PARALLEL_STREAMS_NOT_SUPPORTED);
+        return stream.reduce(parent, (previous, element) -> new RecordLogEntry<>(previous, element, callback),
+                PARALLEL_STREAMS_NOT_SUPPORTED);
     }
 
     private final BinaryOperator<RecordLogEntry<TAggregate>> PARALLEL_STREAMS_NOT_SUPPORTED = (l1, l2) -> {

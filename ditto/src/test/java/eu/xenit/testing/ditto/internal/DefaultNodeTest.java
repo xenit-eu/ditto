@@ -90,6 +90,7 @@ class DefaultNodeTest {
                     });
                 }))
                 .build();
+
         Optional<Node> node1 = dataSet.getNodeView().getNode(noderefs[0]);
         assertThat(node1).isPresent().hasValueSatisfying(value -> {
             assertThat(value).isInstanceOf(Node.class)
