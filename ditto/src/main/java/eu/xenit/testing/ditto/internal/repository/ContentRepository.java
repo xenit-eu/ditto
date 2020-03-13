@@ -12,12 +12,10 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class ContentRepository extends DataRepositoryBase implements TransactionProcessor {
 
     private final HashMap<String, RecordTuple<InternalContentData>> contentUrlMap = new LinkedHashMap<>();
     private final HashMap<ContentPropertyKey, RecordTuple<InternalContentData>> contentPropMap = new LinkedHashMap<>();
-
 
     @EqualsAndHashCode
     @RequiredArgsConstructor
@@ -25,11 +23,6 @@ public class ContentRepository extends DataRepositoryBase implements Transaction
         private final NodeReference nodeReference;
         private final QName property;
     }
-//    @Getter(AccessLevel.PACKAGE) // accessor for testing
-//    private final HashMap<Long, RecordTuple<Node>> nodesByNodeId = new LinkedHashMap<>();
-//
-//    @Getter(AccessLevel.PACKAGE) // accessor for testing
-//    private final HashMap<NodeReference, RecordTuple<Node>> nodesByNodeRef = new LinkedHashMap<>();
 
     @Override
     public void process(long recordId, RecordChain chain, Transaction txn) {
@@ -44,6 +37,7 @@ public class ContentRepository extends DataRepositoryBase implements Transaction
                 }
             });
         });
+
         txn.getDeleted().forEach(delete -> {
             throw new UnsupportedOperationException("not implemented");
         });
@@ -60,5 +54,4 @@ public class ContentRepository extends DataRepositoryBase implements Transaction
     public Optional<InternalContentData> getContent(NodeReference nodeRef, QName property, Cursor cursor) {
         return this.load(this.contentPropMap, new ContentPropertyKey(nodeRef, property), cursor.chain());
     }
-
 }
