@@ -1,21 +1,12 @@
 package eu.xenit.testing.ditto.internal;
 
-import eu.xenit.testing.ditto.api.model.ContentData;
 import eu.xenit.testing.ditto.api.ContentView;
-import eu.xenit.testing.ditto.api.model.Node;
-import eu.xenit.testing.ditto.api.model.NodeReference;
-import eu.xenit.testing.ditto.api.model.Transaction;
 import eu.xenit.testing.ditto.api.data.ContentModel.Content;
+import eu.xenit.testing.ditto.api.model.NodeReference;
 import eu.xenit.testing.ditto.api.model.QName;
-import eu.xenit.testing.ditto.internal.content.InternalContentData;
-import eu.xenit.testing.ditto.internal.record.RecordLogEntry;
 import eu.xenit.testing.ditto.internal.repository.ContentRepository;
 import eu.xenit.testing.ditto.internal.repository.Cursor;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,15 +15,6 @@ public class DefaultContentView implements ContentView {
 
     private final ContentRepository repository;
     private final Cursor cursor;
-
-//    private final HashMap<String, AnnotatedContentData> contentUrlMap = new LinkedHashMap<>();
-//    private final HashMap<String, InternalContentData> contentUrlMap = new LinkedHashMap<>();
-//    private final HashMap<NodeReference, Map<QName, InternalContentData>> contentNodeMap = new LinkedHashMap<>();
-
-//    public DefaultContentView(Cursor cursor) {
-//
-//        this.process(cursor.getHead());
-//    }
 
     public DefaultContentView(ContentRepository repository, Cursor cursor) {
         this.repository = repository;

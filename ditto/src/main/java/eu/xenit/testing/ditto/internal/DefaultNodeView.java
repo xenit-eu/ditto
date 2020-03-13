@@ -22,63 +22,10 @@ public class DefaultNodeView implements NodeView {
     private final NodeRepository storage;
     private final Cursor cursor;
 
-//    private final HashMap<NodeReference, Node> nodesByNodeRef = new LinkedHashMap<>();
-//    private final HashMap<Long, Node> nodesById = new LinkedHashMap<>();
-
     public DefaultNodeView(NodeRepository storage, Cursor cursor) {
-
-//        this.process(cursor.getHead());
         this.storage = storage;
         this.cursor = cursor;
     }
-
-//    private void process(RecordLogEntry<Transaction> head) {
-//        this.processRecursive(head);
-//    }
-//
-//    private void processRecursive(RecordLogEntry<Transaction> record) {
-//
-//        Objects.requireNonNull(record, "record cannot be null");
-//
-//        RecordLogEntry<Transaction> parent = record.getParent();
-//        if (parent == null) {
-//            return;
-//        }
-//
-//        processRecursive(parent);
-//
-//        this.process(record.getData());
-//    }
-//
-//    private void process(Transaction txn) {
-//        log.debug("Replaying {} - with {} writes and {} deletes", txn, txn.getUpdated().size(),
-//                txn.getDeleted().size());
-//
-//        txn.getUpdated().forEach(this::_add);
-//        txn.getDeleted().forEach(this::_delete);
-//    }
-//
-//    private void _add(Node node) {
-//        this.nodesById.put(node.getNodeId(), node);
-//        this.nodesByNodeRef.put(node.getNodeRef(), node);
-//    }
-//
-//    private void _delete(Node node) {
-//        Long nodeId = node.getNodeId();
-//
-//        Node removed = this.nodesById.remove(nodeId);
-//        if (removed == null) {
-//            String exMsg = String.format("Node with id %s is not found in view", nodeId);
-//            throw new IllegalArgumentException(exMsg);
-//        }
-//        if (!Objects.equals(node.getNodeRef(), removed.getNodeRef())) {
-//            String msg = String.format("Aggregate store inconsistency detected, noderef mismatch: %s vs %s",
-//                    node.getNodeRef(), removed.getNodeRef());
-//            throw new IllegalArgumentException(msg);
-//        }
-//
-//        this.nodesByNodeRef.remove(node.getNodeRef());
-//    }
 
     public Optional<Node> getNode(String nodeRef) {
         Assert.hasText(nodeRef, "Argument 'nodeRef' should not be empty or null");

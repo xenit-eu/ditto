@@ -25,8 +25,7 @@ public final class DefaultDataSetBuilder implements DataSetBuilder {
     @Getter(AccessLevel.PACKAGE)
     private LinkedList<Transaction> transactions = new LinkedList<>();
 
-    DefaultDataSetBuilder(BootstrapConfiguration config)
-    {
+    DefaultDataSetBuilder(BootstrapConfiguration config) {
         this(new DataRepository(), null, new RootContext(config));
     }
 
@@ -58,19 +57,9 @@ public final class DefaultDataSetBuilder implements DataSetBuilder {
         return this;
     }
 
-
-
     @Override
     public AlfrescoDataSet build() {
-
-        // process all the write-transactions:
-//        RecordLog<Transaction> txnLog = new RecordLog<>();
-//        RecordLogEntry<Transaction> head = txnLog.process(this.transactions.stream());
-
         Cursor newCursor = this.storage.process(this.cursor, this.transactions.stream());
-//
-//        this.cursor = new Cursor<>(txnLog, head);
-
         return new DefaultAlfrescoDataSet(this.storage, newCursor);
     }
 }
