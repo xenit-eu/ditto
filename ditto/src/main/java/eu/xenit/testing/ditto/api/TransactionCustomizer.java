@@ -19,4 +19,8 @@ public interface TransactionCustomizer extends ContentServiceConfigurer<Transact
 
     Node getNodeByNodeRef(String nodeRef);
 
+    default Node addRoot() {
+        return this.addRoot((r) -> {});
+    }
+
 }

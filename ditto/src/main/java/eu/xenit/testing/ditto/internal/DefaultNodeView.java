@@ -3,81 +3,26 @@ package eu.xenit.testing.ditto.internal;
 import static eu.xenit.testing.ditto.api.model.NodeReference.STOREREF_ID_SPACESSTORE;
 import static eu.xenit.testing.ditto.api.model.NodeReference.STOREREF_PROT_WORKSPACE;
 
-import eu.xenit.testing.ditto.api.data.ContentModel;
+import eu.xenit.testing.ditto.api.NodeView;
 import eu.xenit.testing.ditto.api.data.ContentModel.Application;
-import eu.xenit.testing.ditto.api.data.ContentModel.Content;
 import eu.xenit.testing.ditto.api.data.ContentModel.System;
 import eu.xenit.testing.ditto.api.model.Node;
-import eu.xenit.testing.ditto.api.NodeView;
-import eu.xenit.testing.ditto.api.model.Transaction;
 import eu.xenit.testing.ditto.api.model.NodeReference;
-import eu.xenit.testing.ditto.internal.mvcc.Cursor;
-import eu.xenit.testing.ditto.internal.mvcc.RecordLogEntry;
+import eu.xenit.testing.ditto.internal.repository.Cursor;
+import eu.xenit.testing.ditto.internal.repository.NodeRepository;
 import eu.xenit.testing.ditto.util.Assert;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class DefaultNodeView implements NodeView {
 
-    private final HashMap<NodeReference, Node> nodesByNodeRef = new LinkedHashMap<>();
-    private final HashMap<Long, Node> nodesById = new LinkedHashMap<>();
+    private final NodeRepository repository;
+    private final Cursor cursor;
 
-    public DefaultNodeView(Cursor<Transaction> cursor) {
-
-        this.process(cursor.getHead());
-    }
-
-    private void process(RecordLogEntry<Transaction> head) {
-        this.processRecursive(head);
-    }
-
-    private void processRecursive(RecordLogEntry<Transaction> record) {
-
-        Objects.requireNonNull(record, "record cannot be null");
-
-        RecordLogEntry<Transaction> parent = record.getParent();
-        if (parent == null) {
-            return;
-        }
-
-        processRecursive(parent);
-
-        this.process(record.getData());
-    }
-
-    private void process(Transaction txn) {
-        log.debug("Replaying {} - with {} writes and {} deletes", txn, txn.getUpdated().size(),
-                txn.getDeleted().size());
-
-        txn.getUpdated().forEach(this::_add);
-        txn.getDeleted().forEach(this::_delete);
-    }
-
-    private void _add(Node node) {
-        this.nodesById.put(node.getNodeId(), node);
-        this.nodesByNodeRef.put(node.getNodeRef(), node);
-    }
-
-    private void _delete(Node node) {
-        Long nodeId = node.getNodeId();
-
-        Node removed = this.nodesById.remove(nodeId);
-        if (removed == null) {
-            String exMsg = String.format("Node with id %s is not found in view", nodeId);
-            throw new IllegalArgumentException(exMsg);
-        }
-        if (!Objects.equals(node.getNodeRef(), removed.getNodeRef())) {
-            String msg = String.format("Aggregate store inconsistency detected, noderef mismatch: %s vs %s",
-                    node.getNodeRef(), removed.getNodeRef());
-            throw new IllegalArgumentException(msg);
-        }
-
-        this.nodesByNodeRef.remove(node.getNodeRef());
+    public DefaultNodeView(NodeRepository repository, Cursor cursor) {
+        this.repository = repository;
+        this.cursor = cursor;
     }
 
     public Optional<Node> getNode(String nodeRef) {
@@ -87,15 +32,15 @@ public class DefaultNodeView implements NodeView {
 
     public Optional<Node> getNode(NodeReference nodeRef) {
         Objects.requireNonNull(nodeRef, "Argument 'nodeRef' is required");
-        return Optional.of(this.nodesByNodeRef.get(nodeRef));
+        return this.repository.getNode(nodeRef, this.cursor);
     }
 
     public Optional<Node> getNode(long nodeId) {
-        return Optional.ofNullable(this.nodesById.get(nodeId));
+        return this.repository.getNode(nodeId, cursor);
     }
 
     public Stream<Node> stream() {
-        return this.nodesById.values().stream();
+        return this.repository.stream(this.cursor);
     }
 
     @Override

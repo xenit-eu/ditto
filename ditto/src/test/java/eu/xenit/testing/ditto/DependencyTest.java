@@ -44,6 +44,10 @@ class DependencyTest {
                 internal.mayUse(internal.allSubOf());
                 // .internal and all subpackages may use .api its subpackages
                 internal.andAllSub().mayUse(api.andAllSub());
+
+                // internal.repository may use .content & .record
+                internal.sub("repository").mayUse(internal.sub("record"));
+                internal.sub("repository").mayUse(internal.sub("content"));
             }
         }
 
