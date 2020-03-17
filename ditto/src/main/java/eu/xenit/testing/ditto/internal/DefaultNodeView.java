@@ -3,10 +3,10 @@ package eu.xenit.testing.ditto.internal;
 import static eu.xenit.testing.ditto.api.model.NodeReference.STOREREF_ID_SPACESSTORE;
 import static eu.xenit.testing.ditto.api.model.NodeReference.STOREREF_PROT_WORKSPACE;
 
+import eu.xenit.testing.ditto.api.NodeView;
 import eu.xenit.testing.ditto.api.data.ContentModel.Application;
 import eu.xenit.testing.ditto.api.data.ContentModel.System;
 import eu.xenit.testing.ditto.api.model.Node;
-import eu.xenit.testing.ditto.api.NodeView;
 import eu.xenit.testing.ditto.api.model.NodeReference;
 import eu.xenit.testing.ditto.internal.repository.Cursor;
 import eu.xenit.testing.ditto.internal.repository.NodeRepository;
@@ -14,16 +14,14 @@ import eu.xenit.testing.ditto.util.Assert;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class DefaultNodeView implements NodeView {
 
-    private final NodeRepository storage;
+    private final NodeRepository repository;
     private final Cursor cursor;
 
-    public DefaultNodeView(NodeRepository storage, Cursor cursor) {
-        this.storage = storage;
+    public DefaultNodeView(NodeRepository repository, Cursor cursor) {
+        this.repository = repository;
         this.cursor = cursor;
     }
 
@@ -34,15 +32,15 @@ public class DefaultNodeView implements NodeView {
 
     public Optional<Node> getNode(NodeReference nodeRef) {
         Objects.requireNonNull(nodeRef, "Argument 'nodeRef' is required");
-        return this.storage.getNode(nodeRef, this.cursor);
+        return this.repository.getNode(nodeRef, this.cursor);
     }
 
     public Optional<Node> getNode(long nodeId) {
-        return this.storage.getNode(nodeId, cursor);
+        return this.repository.getNode(nodeId, cursor);
     }
 
     public Stream<Node> stream() {
-        return this.storage.stream(this.cursor);
+        return this.repository.stream(this.cursor);
     }
 
     @Override

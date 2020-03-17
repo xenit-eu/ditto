@@ -16,7 +16,7 @@ import lombok.Getter;
 
 public final class DefaultDataSetBuilder implements DataSetBuilder {
 
-    private final DataRepository storage;
+    private final DataRepository repository;
     private final Cursor cursor;
 
     @Getter(AccessLevel.PACKAGE)
@@ -29,9 +29,9 @@ public final class DefaultDataSetBuilder implements DataSetBuilder {
         this(new DataRepository(), null, new RootContext(config));
     }
 
-    DefaultDataSetBuilder(DataRepository storage, Cursor cursor, RootContext context) {
-        this.storage = storage;
-        this.cursor = cursor != null ? cursor : storage.getRootCursor();
+    DefaultDataSetBuilder(DataRepository repository, Cursor cursor, RootContext context) {
+        this.repository = repository;
+        this.cursor = cursor != null ? cursor : repository.getRootCursor();
         this.context = context;
 
         // TODO validate cursor belongs to this DataRepository instance ?
@@ -59,7 +59,7 @@ public final class DefaultDataSetBuilder implements DataSetBuilder {
 
     @Override
     public AlfrescoDataSet build() {
-        Cursor newCursor = this.storage.process(this.cursor, this.transactions.stream());
-        return new DefaultAlfrescoDataSet(this.storage, newCursor);
+        Cursor newCursor = this.repository.process(this.cursor, this.transactions.stream());
+        return new DefaultAlfrescoDataSet(this.repository, newCursor);
     }
 }

@@ -10,11 +10,11 @@ import eu.xenit.testing.ditto.internal.repository.Cursor;
 
 public class DefaultAlfrescoDataSet implements AlfrescoDataSet {
 
-    private final DataRepository storage;
+    private final DataRepository repository;
     private final Cursor cursor;
 
-    DefaultAlfrescoDataSet(DataRepository storage, Cursor cursor) {
-        this.storage = storage;
+    DefaultAlfrescoDataSet(DataRepository repository, Cursor cursor) {
+        this.repository = repository;
         this.cursor = cursor;
     }
 
@@ -25,16 +25,16 @@ public class DefaultAlfrescoDataSet implements AlfrescoDataSet {
 
     @Override
     public TransactionView getTransactionView() {
-        return new DefaultTransactionView(storage.getTxnRepository(), cursor);
+        return new DefaultTransactionView(repository.getTxnRepository(), cursor);
     }
 
     @Override
     public NodeView getNodeView() {
-        return new DefaultNodeView(storage.getNodeRepository(), cursor);
+        return new DefaultNodeView(repository.getNodeRepository(), cursor);
     }
 
     @Override
     public ContentView getContentView() {
-        return new DefaultContentView(storage.getContentRepository(), cursor);
+        return new DefaultContentView(repository.getContentRepository(), cursor);
     }
 }
