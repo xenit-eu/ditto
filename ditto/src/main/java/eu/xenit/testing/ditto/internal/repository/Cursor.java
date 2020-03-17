@@ -3,7 +3,6 @@ package eu.xenit.testing.ditto.internal.repository;
 import eu.xenit.testing.ditto.api.model.Transaction;
 import eu.xenit.testing.ditto.internal.record.RecordChain;
 import eu.xenit.testing.ditto.internal.record.RecordLogEntry;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,6 @@ public class Cursor {
     private final RecordLogEntry<Transaction> head;
 
     public RecordChain chain() {
-//        return head.path().stream().map(RecordLogEntry::getId);
         return head.chain();
     }
 

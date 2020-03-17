@@ -9,19 +9,19 @@ import lombok.RequiredArgsConstructor;
 
 @AllArgsConstructor
 @RequiredArgsConstructor
-class RecordTuple<TData> {
+class RecordTuple<T> {
 
     final long recordId;
-    final TData data;
+    final T data;
     boolean deleted;
 
-    private final List<RecordTuple<TData>> children = new ArrayList<>();
+    private final List<RecordTuple<T>> children = new ArrayList<>();
 
-    RecordTuple<TData> walk(RecordChain chain) {
+    RecordTuple<T> walk(RecordChain chain) {
         return this.walk(chain.iterator());
     }
 
-    RecordTuple<TData> walk(Iterator<Long> path) {
+    RecordTuple<T> walk(Iterator<Long> path) {
 
         // first check we already have not arrived at the destinations
         if (!path.hasNext()) {
@@ -42,7 +42,7 @@ class RecordTuple<TData> {
                 .walk(path);
     }
 
-    void addChild(RecordTuple<TData> child) {
+    void addChild(RecordTuple<T> child) {
         this.children.add(child);
     }
 }

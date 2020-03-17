@@ -10,7 +10,6 @@ import java.util.LinkedHashMap;
 import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 public class ContentRepository extends DataRepositoryBase implements TransactionProcessor {
 

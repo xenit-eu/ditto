@@ -34,7 +34,7 @@ public final class DefaultDataSetBuilder implements DataSetBuilder {
         this.cursor = cursor != null ? cursor : storage.getRootCursor();
         this.context = context;
 
-        // TODO validate cursor belongs to this DataStorage instance ?
+        // TODO validate cursor belongs to this DataRepository instance ?
     }
 
     @Override

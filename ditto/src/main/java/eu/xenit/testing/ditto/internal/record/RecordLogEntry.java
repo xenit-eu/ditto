@@ -9,7 +9,6 @@ public class RecordLogEntry<TAggregate> {
 
     private final RecordLogEntry<TAggregate> parent;
     private final TAggregate data;
-    //    private final UUID id;
     private final long id;
 
     private RecordChain _chainCache = null;
@@ -24,13 +23,11 @@ public class RecordLogEntry<TAggregate> {
 
         this.parent = null;
         this.data = null;
-//        this.id = UUID.randomUUID();
         this.id = 0L;
 
         this._chainCache = new DefaultRecordChain(Stream.empty(), this.id);
     }
-
-    //    public RecordLogEntry(RecordLogEntry<TAggregate> parent, TAggregate data/*, TAggregateId dataId*/) {
+    
     public RecordLogEntry(RecordLogEntry<TAggregate> parent, TAggregate data) {
         Objects.requireNonNull(parent, "parent is required");
         Objects.requireNonNull(data, "data is required");
