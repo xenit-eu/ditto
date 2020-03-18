@@ -2,7 +2,7 @@ package eu.xenit.testing.ditto.internal;
 
 import eu.xenit.testing.ditto.api.AlfrescoDataSet;
 import eu.xenit.testing.ditto.api.BootstrapConfiguration;
-import eu.xenit.testing.ditto.api.BuilderConfigurer;
+import eu.xenit.testing.ditto.api.BuilderConfigurator;
 import eu.xenit.testing.ditto.api.DataSetBuilder;
 import eu.xenit.testing.ditto.api.TransactionCustomizer;
 import eu.xenit.testing.ditto.api.model.Transaction;
@@ -52,8 +52,8 @@ public final class DefaultDataSetBuilder implements DataSetBuilder {
     }
 
     @Override
-    public DataSetBuilder configure(Consumer<BuilderConfigurer> configurer) {
-        configurer.accept(new DefaultBuilderConfigurer(this.context));
+    public DataSetBuilder configure(Consumer<BuilderConfigurator> configurer) {
+        configurer.accept(new DefaultBuilderConfigurator(this.context));
         return this;
     }
 

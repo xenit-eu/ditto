@@ -1,11 +1,11 @@
 package eu.xenit.testing.ditto.api;
 
-import eu.xenit.testing.ditto.api.content.ContentServiceConfigurer;
+import eu.xenit.testing.ditto.api.content.ContentServiceConfigurator;
 import eu.xenit.testing.ditto.api.model.Node;
 import eu.xenit.testing.ditto.api.model.QName;
 import java.util.function.Consumer;
 
-public interface TransactionCustomizer extends ContentServiceConfigurer<TransactionCustomizer> {
+public interface TransactionCustomizer extends ContentServiceConfigurator<TransactionCustomizer> {
 
     TransactionCustomizer skipToNodeId(long nodeId);
 
