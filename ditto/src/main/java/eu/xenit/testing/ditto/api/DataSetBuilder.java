@@ -8,7 +8,7 @@ public interface DataSetBuilder {
 
     DataSetBuilder skipToTransaction(long newTxnSeqId);
 
-    DataSetBuilder configure(Consumer<BuilderConfigurer> configurer);
+    DataSetBuilder configure(Consumer<BuilderConfigurator> configurer);
 
     AlfrescoDataSet build();
 

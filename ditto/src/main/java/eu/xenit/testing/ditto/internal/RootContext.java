@@ -1,6 +1,7 @@
 package eu.xenit.testing.ditto.internal;
 
 import eu.xenit.testing.ditto.api.BootstrapConfiguration;
+import eu.xenit.testing.ditto.api.BuilderConfigurator;
 import eu.xenit.testing.ditto.api.data.ContentModel.Content;
 import eu.xenit.testing.ditto.api.model.Node;
 import eu.xenit.testing.ditto.api.model.NodeReference;
@@ -105,9 +106,11 @@ public class RootContext {
     }
 
 
+    @Deprecated
     @Getter
     private Map<String, Node> namedReferences = new LinkedHashMap<>();
 
+    @Deprecated
     void createNamedReference(String name, Node node) {
         this.namedReferences.put(name, node);
     }

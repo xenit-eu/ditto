@@ -1,35 +1,37 @@
 package eu.xenit.testing.ditto.internal;
 
-import eu.xenit.testing.ditto.api.BuilderConfigurer;
+import eu.xenit.testing.ditto.api.BuilderConfigurator;
 import eu.xenit.testing.ditto.api.content.SwarmContentServiceCustomizer;
+import eu.xenit.testing.ditto.api.model.Node;
+import eu.xenit.testing.ditto.api.model.QName;
 import eu.xenit.testing.ditto.internal.content.FileSystemContentUrlProvider;
 import eu.xenit.testing.ditto.internal.content.SwarmContentUrlProvider;
 import eu.xenit.testing.ditto.internal.content.SwarmContentServiceConfiguration;
 import java.util.function.Consumer;
 
-class DefaultBuilderConfigurer implements BuilderConfigurer {
+class DefaultBuilderConfigurator implements BuilderConfigurator {
 
     private final RootContext context;
 
-    DefaultBuilderConfigurer(RootContext context) {
+    DefaultBuilderConfigurator(RootContext context) {
 
         this.context = context;
     }
 
     @Override
-    public BuilderConfigurer resetDefaultContentUrlProvider() {
+    public BuilderConfigurator resetDefaultContentUrlProvider() {
         this.context.setContentUrlProvider(null);
         return this;
     }
 
     @Override
-    public BuilderConfigurer useFileSystemContentService() {
+    public BuilderConfigurator useFileSystemContentService() {
         this.context.setContentUrlProvider(new FileSystemContentUrlProvider());
         return this;
     }
 
     @Override
-    public BuilderConfigurer useSwarmContentService(Consumer<SwarmContentServiceCustomizer> customizer) {
+    public BuilderConfigurator useSwarmContentService(Consumer<SwarmContentServiceCustomizer> customizer) {
         SwarmContentServiceConfiguration config = new SwarmContentServiceConfiguration();
         customizer.accept(config);
 
@@ -38,5 +40,4 @@ class DefaultBuilderConfigurer implements BuilderConfigurer {
 
         return this;
     }
-
 }
