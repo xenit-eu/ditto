@@ -38,6 +38,7 @@ public class NodeInitializer {
         this.setupBiDrectionalPeerAssocs(node);
     }
 
+    // FIXME the child collections should NOT be mutable through their public API !!
     private void setupBiDirectionalParentAssoc(DefaultNode node) {
         ParentChildAssoc parentAssoc = node.getPrimaryParentAssoc();
         if (parentAssoc == null) {
