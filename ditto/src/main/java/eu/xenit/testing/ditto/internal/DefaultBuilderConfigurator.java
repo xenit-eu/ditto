@@ -40,4 +40,16 @@ class DefaultBuilderConfigurator implements BuilderConfigurator {
 
         return this;
     }
+
+    @Override
+    public BuilderConfigurator setDefaultParentNode(Node node) {
+        this.context.setDefaultParentNode(node);
+        return this;
+    }
+
+    @Override
+    public BuilderConfigurator setDefaultChildAssocType(QName qname) {
+        this.context.setDefaultChildAssocType(qname);
+        return this;
+    }
 }

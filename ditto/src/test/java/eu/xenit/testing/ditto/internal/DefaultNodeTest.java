@@ -1,10 +1,13 @@
 package eu.xenit.testing.ditto.internal;
 
+import static eu.xenit.testing.ditto.internal.DittoAssertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import eu.xenit.testing.ditto.api.AlfrescoDataSet;
+import eu.xenit.testing.ditto.api.NodeAssert;
+import eu.xenit.testing.ditto.api.NodeHolder;
 import eu.xenit.testing.ditto.api.NodeView;
 import eu.xenit.testing.ditto.api.data.ContentModel.Content;
 import eu.xenit.testing.ditto.api.model.MLText;
@@ -22,15 +25,31 @@ import org.junit.jupiter.api.Test;
 class DefaultNodeTest {
 
     @Test
-    void txnId() {
+    void nodeAndTxnId() {
         RootContext root = mock(RootContext.class);
         when(root.now()).thenReturn(Instant.now());
         when(root.nextTxnId()).thenReturn(7L);
+        when(root.nextNodeId()).thenReturn(19L);
         TransactionContext txn = new TransactionContext(root);
 
         Node node = DefaultNode.builder(txn, null, null).build();
 
-        assertThat(node.getTxnId()).isEqualTo(7L);
+        assertThat(node)
+                .hasTxnId(7)
+                .hasNodeId(19);
+    }
+
+    @Test
+    void parentDefaultsToCompanyHome() {
+        NodeHolder node = new NodeHolder();
+
+        AlfrescoDataSet dataSet = AlfrescoDataSet.bootstrapAlfresco().addTransaction(txn -> {
+            Node foo = txn.addNode(n -> n.name("foo.txt"));
+            node.set(foo);
+        }).build();
+
+        Node companyHome = dataSet.getNodeView().getCompanyHome().orElseThrow(RuntimeException::new);
+        assertThat(node.get()).hasParent(p -> p.isEqualTo(companyHome));
     }
 
     @Test
@@ -135,7 +154,7 @@ class DefaultNodeTest {
         assertThat(node1.isPresent()).isTrue();
         assertThat(node1.get().getSourceAssociationCollection().getAssociations())
                 .hasOnlyOneElementSatisfying(assoc -> {
-                  assertThat(assoc.getSourceNode().getNodeRef()).isEqualTo(nodes[0].getNodeRef());
+                    assertThat(assoc.getSourceNode().getNodeRef()).isEqualTo(nodes[0].getNodeRef());
                     assertThat(assoc.getTargetNode().getNodeRef()).isEqualTo(nodes[1].getNodeRef());
                     assertThat(assoc.getSourceNode().getType()).isEqualTo(nodes[0].getType());
                     assertThat(assoc.getTargetNode().getType()).isEqualTo(nodes[1].getType());

@@ -17,7 +17,9 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
 public class RootContext {
 
@@ -119,9 +121,13 @@ public class RootContext {
         return this.dictionary.resolveQName(qname);
     }
 
-    QName getDefaultChildAssocType() {
-        return Content.CONTAINS;
-    }
+    @Getter(AccessLevel.PACKAGE)
+    @Setter(AccessLevel.PACKAGE)
+    private QName defaultChildAssocType = Content.CONTAINS;
+
+    @Getter(AccessLevel.PACKAGE)
+    @Setter(AccessLevel.PACKAGE)
+    private Node defaultParentNode = null;
 
     private Map<NodeReference, Node> nodes = new HashMap<>();
 
