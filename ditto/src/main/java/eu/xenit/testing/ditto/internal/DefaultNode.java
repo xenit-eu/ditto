@@ -182,6 +182,7 @@ public class DefaultNode implements Node {
         }
 
 
+        @Deprecated
         void createNamedReference(String name, Node node) {
             this.txnContext.createNamedReference(name, node);
         }
@@ -501,11 +502,13 @@ public class DefaultNode implements Node {
         }
 
         @Override
+        @Deprecated
         public NodeBuilder createNamedReference(String name) {
             return this.callback(node -> this.context.createNamedReference(name, node));
         }
 
         @Override
+        @Deprecated
         public NodeBuilder createNamedReference() {
             return this.callback(node -> this.context.createNamedReference(node.getName(), node));
         }

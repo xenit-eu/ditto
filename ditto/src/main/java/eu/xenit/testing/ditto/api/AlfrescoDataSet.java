@@ -1,6 +1,5 @@
 package eu.xenit.testing.ditto.api;
 
-import eu.xenit.testing.ditto.api.data.ContentModel.System;
 import eu.xenit.testing.ditto.api.model.Node;
 import java.time.Instant;
 import java.util.function.Consumer;
@@ -50,6 +49,7 @@ public interface AlfrescoDataSet {
         return builder().build();
     }
 
+    @Deprecated
     Node getNamedReference(String name);
 
     TransactionView getTransactionView();

@@ -45,7 +45,10 @@ public interface NodeCustomizer {
 
     NodeCustomizer callback(Consumer<Node> callback);
 
+    @Deprecated
     NodeCustomizer createNamedReference(String name);
+
+    @Deprecated
     NodeCustomizer createNamedReference();
 
     String storeRefProtocol();
