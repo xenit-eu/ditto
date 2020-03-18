@@ -40,6 +40,7 @@ class AlfrescoBootstrapper<T extends DataSetBuilder> {
             });
         });
 
+        NodeHolder companyHomeHolder = new NodeHolder();
         builder.skipToTransaction(6)
                 .addTransaction(txn -> {
                     txn.skipToNodeId(12);
@@ -57,6 +58,8 @@ class AlfrescoBootstrapper<T extends DataSetBuilder> {
                         node.aspect(Application.UIFACETS);
                         node.property(Application.ICON, "space-icon-default");
                     });
+                    companyHomeHolder.set(companyHome);
+
                     Node dataDictionary = txn.addFolder(companyHome, appNode("Data Dictionary", node -> {
                         node.qname(Application.createQName("dictionary"));
                         node.mlProperty(Content.DESCRIPTION, "User managed definitions");
@@ -76,6 +79,10 @@ class AlfrescoBootstrapper<T extends DataSetBuilder> {
                     });
                     txn.addNode(companyHome, node -> node.name("User Homes"));
                 });
+
+        builder.configure(config -> {
+            config.setDefaultParentNode(companyHomeHolder.get());
+        });
 
         return builder;
     }

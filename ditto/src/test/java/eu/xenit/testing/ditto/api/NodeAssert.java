@@ -15,8 +15,16 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
         super(node, NodeAssert.class);
     }
 
+    public NodeAssert hasTxnId(long txnId) {
+        assertThat(actual.getTxnId())
+                .as("Transaction id for %s", actual)
+                .isEqualTo(txnId);
+        return myself;
+    }
     public NodeAssert hasNodeId(long nodeId) {
-        assertThat(actual.getNodeId()).isEqualTo(nodeId);
+        assertThat(actual.getNodeId())
+                .as("Node id for %s", actual)
+                .isEqualTo(nodeId);
         return myself;
     }
 

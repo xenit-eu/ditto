@@ -106,8 +106,13 @@ public class DefaultTransaction implements Transaction {
 
         }
 
-        public QName getDefaultChildAssocType() {
+
+        QName getDefaultChildAssocType() {
             return this.rootContext.getDefaultChildAssocType();
+        }
+
+        Node getDefaultParentNode() {
+            return this.rootContext.getDefaultParentNode();
         }
 
         public Node getNodeByNodeRef(NodeReference nodeRef) {
@@ -150,6 +155,14 @@ public class DefaultTransaction implements Transaction {
 
         @Override
         public Node addNode(Node parent, QName assocType, Consumer<NodeCustomizer> customizer) {
+            if (parent == null) {
+                parent = this.context.getDefaultParentNode();
+            }
+
+            if (assocType == null) {
+                assocType = this.context.getDefaultChildAssocType();
+            }
+
             NodeBuilder builder = DefaultNode.builder(this.context, parent, assocType);
             customizer.accept(builder);
 
@@ -165,8 +178,6 @@ public class DefaultTransaction implements Transaction {
 
         @Override
         public Node addNode(Consumer<NodeCustomizer> customizer) {
-            // TODO parent should be configured default (company home?)
-            // loaded from the transaction/root context ?
             return this.addNode(null, null, customizer);
         }
 
