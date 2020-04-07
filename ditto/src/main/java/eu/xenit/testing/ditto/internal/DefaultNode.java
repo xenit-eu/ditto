@@ -95,8 +95,8 @@ public class DefaultNode implements Node {
         this.qName = builder.qname != null ? builder.qname : Content.createQName(this.getName());
         this.aspects = new HashSet<>(builder.aspects);
         this.childNodeCollection = new DefaultParentChildNodeCollection(this);
-        this.sourceAssociationCollection = new DefaultPeerAssocCollection(Type.SOURCE,builder.sourceAssociations);
-        this.targetAssociationCollection = new DefaultPeerAssocCollection(Type.TARGET,builder.targetAssociations);
+        this.sourceAssociationCollection = new DefaultPeerAssocCollection(Type.SOURCE, builder.sourceAssociations);
+        this.targetAssociationCollection = new DefaultPeerAssocCollection(Type.TARGET, builder.targetAssociations);
 
         if (builder.context.getParent() != null && builder.context.getParentChildAssocType() != null) {
             this.primaryParentAssoc = new DefaultParentChildAssoc(builder.context.getParent(),
@@ -126,7 +126,7 @@ public class DefaultNode implements Node {
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName()+"[id="+this.nodeId+"; nodeRef="+this.getNodeRef()+"]";
+        return this.getClass().getSimpleName() + "[id=" + this.nodeId + "; nodeRef=" + this.getNodeRef() + "]";
     }
 
     public static class NodeContext implements ContentContext {
@@ -179,6 +179,14 @@ public class DefaultNode implements Node {
             }
 
             return this.contentDataMap.get(propertyName);
+        }
+
+        void skipToContentDataId(long contentDataId) {
+            txnContext.skipToContentDataId(contentDataId);
+        }
+
+        long nextContentDataId() {
+            return txnContext.nextContentDataId();
         }
 
 

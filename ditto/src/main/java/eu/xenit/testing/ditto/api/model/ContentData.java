@@ -11,4 +11,6 @@ public interface ContentData extends Serializable {
 
     String getEncoding();
     String getLocale();
+
+    long getId();
 }

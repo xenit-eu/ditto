@@ -135,7 +135,7 @@ public class NodeInitializer {
             // Create content-data
             ContentData contentData = new DefaultContentData(contentDelegate,
                     contentUrl, builder.mimetype(), builder.size(),
-                    builder.getEncodingOrDefault().name(), builder.locale());
+                    builder.getEncodingOrDefault().name(), builder.locale(), context.nextContentDataId());
 
             // Save it in the node properties
             Serializable old = node.getProperties().putIfAbsent(key, contentData);
