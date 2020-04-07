@@ -85,6 +85,14 @@ public class DefaultTransaction implements Transaction {
             return this.rootContext.nextNodeId();
         }
 
+        public void skipToContentDataId(long contentDataId) {
+            this.rootContext.skipToContentDataId(contentDataId);
+        }
+
+        public long nextContentDataId() {
+            return this.rootContext.nextContentDataId();
+        }
+
         @Setter
         private ContentUrlProviderSpi contentUrlProvider = null;
 

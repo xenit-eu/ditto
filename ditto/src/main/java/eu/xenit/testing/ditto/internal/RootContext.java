@@ -28,6 +28,7 @@ public class RootContext {
 
     private long nextTxnId = 1;
     private long nextNodeId = 1;
+    private long nextContentDataId = 1;
 
     private final Instant bootstrapInstant;
     private final Locale defaultLocale;
@@ -77,6 +78,20 @@ public class RootContext {
         }
 
         this.nextNodeId = nodeId;
+    }
+
+    long nextContentDataId() {
+        return this.nextContentDataId++;
+    }
+
+    void skipToContentDataId(long contentDataId) {
+        if (contentDataId < this.nextContentDataId) {
+            String msg = String.format("Invalid parameter 'contentDataId' = %s - can only skip forward,"
+                    + "parameter 'contentDataId' should be >= %s", contentDataId, this.nextNodeId);
+            throw new IllegalArgumentException(msg);
+        }
+
+        this.nextContentDataId = contentDataId;
     }
 
     Instant now() {

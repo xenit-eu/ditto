@@ -17,16 +17,15 @@ public class DefaultContentData implements InternalContentData, ContentData {
     private long size;
     private String encoding;
     private String locale;
+    private long id;
 
     @Override
-    public String toString(){
-        return new StringBuilder()
-                .append("contentUrl=").append(this.getContentUrl())
-                .append("|mimetype=").append(this.getMimeType())
-                .append("|size=").append(this.getSize())
-                .append("|encoding=").append(this.getEncoding())
-                .append("|locale=").append(this.getLocale())
-//                .append("|id=").append()
-                .toString();
+    public String toString() {
+        return "contentUrl=" + this.getContentUrl()
+                + "|mimetype=" + this.getMimeType()
+                + "|size=" + this.getSize()
+                + "|encoding=" + this.getEncoding()
+                + "|locale=" + this.getLocale()
+                + "|id=" + this.getId();
     }
 }
