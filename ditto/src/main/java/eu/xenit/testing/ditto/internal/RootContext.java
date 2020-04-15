@@ -24,13 +24,12 @@ import lombok.Setter;
 public class RootContext {
 
     private final Clock clock;
-    private final DictionaryService dictionary = new DictionaryService();
+    private final DictionaryService dictionary;
 
     private long nextTxnId = 1;
     private long nextNodeId = 1;
     private long nextContentDataId = 1;
 
-    private final Instant bootstrapInstant;
     private final Locale defaultLocale;
 
     private ContentUrlProviderSpi contentUrlProvider = null;
@@ -40,12 +39,27 @@ public class RootContext {
     {
         Objects.requireNonNull(bootstrapConfig, "Argument 'bootstrapConfig' is required");
 
-        this.bootstrapInstant = bootstrapConfig.getBootstrapInstant().truncatedTo(ChronoUnit.MILLIS);
+        Instant bootstrapInstant = bootstrapConfig.getBootstrapInstant().truncatedTo(ChronoUnit.MILLIS);
+        this.clock =  Clock.fixed(bootstrapInstant, ZoneId.of("UTC"));
+
         this.defaultLocale = bootstrapConfig.getDefaultLocale();
-        this.clock =  Clock.fixed(this.bootstrapInstant, ZoneId.of("UTC"));
 
-
+        this.dictionary = new DictionaryService();
         bootstrapConfig.getNamespaces().forEach(this.dictionary::registerNamespace);
+    }
+
+    RootContext(RootContext parentContext) {
+        this.clock = parentContext.clock;
+
+        // FIXME dictionary contains state and should be properly versioned with a cursor ?
+        this.dictionary = parentContext.dictionary;
+
+        this.nextTxnId = parentContext.nextTxnId;
+        this.nextNodeId = parentContext.nextNodeId;
+        this.nextContentDataId = parentContext.nextContentDataId;
+
+        this.defaultLocale = parentContext.defaultLocale;
+        this.contentUrlProvider = parentContext.contentUrlProvider;
     }
 
     long nextTxnId() {

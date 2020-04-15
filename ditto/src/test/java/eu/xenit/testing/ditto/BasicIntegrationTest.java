@@ -1,29 +1,34 @@
-package eu.xenit.testing.ditto.api;
+package eu.xenit.testing.ditto;
 
+import static eu.xenit.testing.ditto.internal.DittoAssertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import eu.xenit.testing.ditto.api.data.ContentModel;
+import eu.xenit.testing.ditto.api.AlfrescoDataSet;
+import eu.xenit.testing.ditto.api.ContentView;
+import eu.xenit.testing.ditto.api.NodeView;
 import eu.xenit.testing.ditto.api.data.ContentModel.Content;
 import eu.xenit.testing.ditto.api.model.NodeReference;
-import java.time.Instant;
 import org.junit.jupiter.api.Test;
 
-class AlfrescoDataSetTest {
+class BasicIntegrationTest {
+
+    private final NodeReference NODEREF_FOO_TXT = NodeReference.newNodeRef();
 
     private AlfrescoDataSet dataSet = AlfrescoDataSet.bootstrapAlfresco()
-            .skipToTransaction(12345L)
+            .configure(config -> {
+                config.skipToTxnId(12345L);
+                config.skipToNodeId(4321L);
+            })
             .addTransaction(txn -> {
                 txn.addNode(doc -> {
+                    doc.nodeRef(NODEREF_FOO_TXT);
                     doc.type(Content.CONTENT);
                     doc.name("foo.txt");
                     doc.content("foobar");
                     doc.property("cm:description", "Test description");
-                    NODEREF_FOO_TXT = doc.nodeRef();
                 });
             })
             .build();
-
-    private NodeReference NODEREF_FOO_TXT;
 
     @Test
     void checkTransactionViewBasics() {
@@ -73,6 +78,49 @@ class AlfrescoDataSetTest {
                                 assertThat(stream).hasContent("foobar");
                             });
                 });
+    }
+
+    @Test
+    void testContinuation() {
+        NodeReference nodeRef = NodeReference.newNodeRef();
+        AlfrescoDataSet snapshotBranch1 = dataSet.toBuilder()
+                .addTransaction(txn -> {
+                    txn.addNode(doc -> {
+                        doc.nodeRef(nodeRef);
+                        doc.type(Content.CONTENT);
+                        doc.name("bar.txt");
+                    });
+                })
+                .build();
+
+        // creating a new branch from the same snapshot
+        AlfrescoDataSet snapshotBranch2 = dataSet.toBuilder()
+                .addTransaction(txn -> {
+                    txn.addNode(doc -> {
+                        doc.nodeRef(nodeRef);
+                        doc.type(Content.CONTENT);
+                        doc.name("branch2.txt");
+                    });
+                })
+                .build();
+
+        // the new node should NOT be present in the original snapshot
+        assertThat(dataSet.getNodeView().getNode(nodeRef)).isNotPresent();
+
+        // the new node SHOULD be present in the branch-1-snapshot
+        assertThat(snapshotBranch1.getNodeView().getNode(nodeRef))
+                .hasValueSatisfying(node -> assertThat(node)
+                        .hasName("bar.txt")
+                        .hasTxnId(12346L)
+                        .hasNodeId(4322L));
+
+        // the new node SHOULD be present in the branch-2-snapshot
+        // and expecting the SAME txn-id and node-id
+        assertThat(snapshotBranch2.getNodeView().getNode(nodeRef))
+                .hasValueSatisfying(node -> assertThat(node)
+                        .hasName("branch2.txt")
+                        .hasTxnId(12346L)
+                        .hasNodeId(4322L));
     }
 
 }

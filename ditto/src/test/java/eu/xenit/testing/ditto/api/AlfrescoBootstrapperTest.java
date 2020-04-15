@@ -18,7 +18,8 @@ class AlfrescoBootstrapperTest {
 
     @Test
     void testCompanyHome() {
-
+        // FIXME we should not test `DefaultDataSetBuilder` here, but call `.build()` on it and
+        // assert the result there
         DefaultDataSetBuilder builder = new AlfrescoBootstrapper<DefaultDataSetBuilder>().bootstrap(builder());
 
         assertThat(builder).hasTransactionWithId(6L, txn -> {

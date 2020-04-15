@@ -52,4 +52,16 @@ class DefaultBuilderConfigurator implements BuilderConfigurator {
         this.context.setDefaultChildAssocType(qname);
         return this;
     }
+
+    @Override
+    public BuilderConfigurator skipToTxnId(long newTxnSeqId) {
+        this.context.skipToTransactionId(newTxnSeqId);
+        return this;
+    }
+
+    @Override
+    public BuilderConfigurator skipToNodeId(long newNodeSeqId) {
+        this.context.skipToNodeId(newNodeSeqId);
+        return this;
+    }
 }

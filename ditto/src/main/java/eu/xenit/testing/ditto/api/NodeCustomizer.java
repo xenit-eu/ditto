@@ -15,6 +15,7 @@ import java.util.function.Consumer;
 public interface NodeCustomizer {
 
     NodeReference nodeRef();
+    NodeCustomizer nodeRef(NodeReference nodeRef);
 
     Map<QName, Serializable> properties();
     NodeCustomizer properties(Map<QName, Serializable> properties);
