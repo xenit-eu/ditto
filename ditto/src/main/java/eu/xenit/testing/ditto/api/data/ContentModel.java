@@ -30,6 +30,13 @@ public interface ContentModel {
 
         QName OWNER = createQName("owner");
 
+        QName VERSIONABLE = createQName("versionable");
+        QName VERSION_LABEL = createQName("versionLabel");
+        QName VERSION_TYPE = createQName("versionType");
+        QName INITIAL_VERSION = createQName("initialVersion");
+        QName AUTO_VERSION = createQName("autoVersion");
+        QName AUTO_VERSION_ON_UPDATE_PROPS = createQName("autoVersionOnUpdateProps");
+
         static QName createQName(String localName) {
             return QName.createQName(NAMESPACE, localName);
         }
@@ -61,6 +68,7 @@ public interface ContentModel {
     }
 
     interface User {
+
         Namespace NAMESPACE = Namespace.createNamespace("http://www.alfresco.org/model/user/1.0", "usr");
 
         QName USER = createQName("user");
@@ -72,6 +80,7 @@ public interface ContentModel {
     }
 
     interface Application {
+
         Namespace NAMESPACE = Namespace.createNamespace("http://www.alfresco.org/model/application/1.0", "app");
 
         QName UIFACETS = createQName("uifacets");
@@ -80,6 +89,45 @@ public interface ContentModel {
         static QName createQName(String localName) {
             return QName.createQName(NAMESPACE, localName);
         }
+    }
+
+    interface Site {
+
+        Namespace NAMESPACE = Namespace.createNamespace("http://www.alfresco.org/model/site/1.0", "st");
+        QName SITE = createQName("site");
+        QName SITE_PRESET = createQName("sitePreset");
+        QName SITE_VISIBILITY = createQName("siteVisibility");
+
+        QName SITES = createQName("sites");
+
+        static QName createQName(String localName) {
+            return QName.createQName(NAMESPACE, localName);
+        }
+
+    }
+
+    interface Version2 {
+
+        Namespace NAMESPACE = Namespace.createNamespace("http://www.alfresco.org/model/versionstore/2.0", "ver2");
+
+        QName VERSION_HISTORY = createQName("versionHistory");
+        QName VERSION = createQName("version");
+        QName ROOT_VERSION = createQName("rootVersion");
+        QName VERSIONED_NODE_ID = createQName("versionedNodeId");
+
+        QName FROZEN_NODE_REF = createQName("frozenNodeRef");
+        QName FROZEN_CREATED = createQName("frozenCreated");
+        QName FROZEN_CREATOR = createQName("frozenCreator");
+        QName FROZEN_MODIFIED = createQName("frozenModified");
+        QName FROZEN_MODIFIER = createQName("frozenModifier");
+        QName VERSION_LABEL = createQName("versionLabel");
+        QName VERSION_DESCRIPTION = createQName("versionDescription");
+
+        static QName createQName(String localName) {
+            return QName.createQName(NAMESPACE, localName);
+        }
+
+
     }
 
 }
