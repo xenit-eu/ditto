@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import eu.xenit.testing.ditto.api.model.Node;
 import eu.xenit.testing.ditto.api.model.QName;
-import eu.xenit.testing.ditto.api.model.Transaction;
+import java.io.Serializable;
 import java.util.Set;
 import java.util.function.Consumer;
 import org.assertj.core.api.AbstractAssert;
@@ -21,10 +21,16 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
                 .isEqualTo(txnId);
         return myself;
     }
+
     public NodeAssert hasNodeId(long nodeId) {
         assertThat(actual.getNodeId())
                 .as("Node id for %s", actual)
                 .isEqualTo(nodeId);
+        return myself;
+    }
+
+    public NodeAssert hasUuid(String uuid) {
+        assertThat(actual.getNodeRef().getUuid()).isEqualTo(uuid);
         return myself;
     }
 
@@ -59,6 +65,18 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
                     callback.accept(n.getAspects());
                 });
 
+        return myself;
+    }
+
+    public NodeAssert hasProperty(QName qName) {
+        assertThat(actual.getProperties()).isNotNull();
+        assertThat(actual.getProperties().containsKey(qName)).isTrue();
+        return myself;
+    }
+
+    public NodeAssert hasProperty(QName qName, Serializable expectedValue) {
+        hasProperty(qName);
+        assertThat(actual.getProperties().get(qName).orElse(null)).isEqualTo(expectedValue);
         return myself;
     }
 

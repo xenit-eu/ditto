@@ -32,7 +32,7 @@ public interface Node {
             return "";
         }
 
-        return parent.getQNamePath() + "/" + this.getQName().toPrefixString();
+        return parent.getQNamePath() + "/" + this.getQName().toPrefixString().replace(" ", "_x0020_");
     }
 
     ParentChildNodeCollection getChildNodeCollection();
