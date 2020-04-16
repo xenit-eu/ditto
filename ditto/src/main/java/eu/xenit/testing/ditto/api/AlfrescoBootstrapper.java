@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 class AlfrescoBootstrapper<T extends DataSetBuilder> {
 
     void configureBootstrap(BootstrapConfiguration config) {
-        config.withNamespaces(System.NAMESPACE, Content.NAMESPACE);
+        config.withNamespaces(System.NAMESPACE, Content.NAMESPACE, Version2.NAMESPACE);
     }
 
     T bootstrap(T builder) {
@@ -170,7 +170,7 @@ class AlfrescoBootstrapper<T extends DataSetBuilder> {
         return node -> {
 
             node.name(name);
-            node.qname(Application.createQName(name.toLowerCase().replace(" ", "_")));
+            node.qname(Application.createQName(toQNameName(name)));
 
             node.aspect(Content.TITLED);
             node.mlProperty(Content.TITLE, name);
@@ -185,18 +185,21 @@ class AlfrescoBootstrapper<T extends DataSetBuilder> {
 
     private Consumer<NodeCustomizer> sitesNode(String name, Consumer<NodeCustomizer> callback) {
         return node -> {
+            node.name(name)
+                    .qname(Site.createQName(toQNameName(name)))
 
-            node.name(name);
-            node.qname(Site.createQName(name.toLowerCase().replace(" ", "_")));
+                    .aspect(Content.TITLED)
+                    .mlProperty(Content.TITLE, name)
 
-            node.aspect(Content.TITLED);
-            node.mlProperty(Content.TITLE, name);
-
-            node.aspect(Application.UIFACETS);
-            node.property(Application.ICON, "space-icon-default");
+                    .aspect(Application.UIFACETS)
+                    .property(Application.ICON, "space-icon-default");
 
             callback.accept(node);
         };
+    }
+
+    private String toQNameName(String name) {
+        return name.toLowerCase().replace(" ", "_");
     }
 
     private Consumer<NodeCustomizer> versionHistoryNode(Node liveNode, Consumer<NodeCustomizer> callback) {

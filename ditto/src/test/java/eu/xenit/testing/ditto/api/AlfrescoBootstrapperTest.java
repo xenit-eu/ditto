@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Test;
 
 class AlfrescoBootstrapperTest {
 
+    private static final String FIXED_UUID_PROJECT_CONTRACT = "1a0b110f-1e09-4ca2-b367-fe25e4964a4e";
+
     @Test
     void testCompanyHome() {
 
@@ -35,8 +37,6 @@ class AlfrescoBootstrapperTest {
             );
         });
     }
-
-    private static final String FIXED_UUID_PROJECT_CONTRACT = "1a0b110f-1e09-4ca2-b367-fe25e4964a4e";
 
     @Test
     void testVersionedNode() {
