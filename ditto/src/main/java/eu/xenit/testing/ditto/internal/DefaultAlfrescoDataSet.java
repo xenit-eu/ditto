@@ -2,6 +2,7 @@ package eu.xenit.testing.ditto.internal;
 
 import eu.xenit.testing.ditto.api.AlfrescoDataSet;
 import eu.xenit.testing.ditto.api.ContentView;
+import eu.xenit.testing.ditto.api.DataSetBuilder;
 import eu.xenit.testing.ditto.api.NodeView;
 import eu.xenit.testing.ditto.api.TransactionView;
 import eu.xenit.testing.ditto.api.model.Node;
@@ -12,10 +13,17 @@ public class DefaultAlfrescoDataSet implements AlfrescoDataSet {
 
     private final DataRepository repository;
     private final Cursor cursor;
+    private final RootContext context;
 
-    DefaultAlfrescoDataSet(DataRepository repository, Cursor cursor) {
+    DefaultAlfrescoDataSet(DataRepository repository, Cursor cursor, RootContext context) {
         this.repository = repository;
         this.cursor = cursor;
+        this.context = context;
+    }
+
+    @Override
+    public DataSetBuilder toBuilder() {
+        return new DefaultDataSetBuilder(this.repository, this.cursor, new RootContext(this.context));
     }
 
     @Override

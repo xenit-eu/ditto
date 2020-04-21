@@ -6,4 +6,7 @@ public interface BuilderConfigurator extends
         ContentServiceConfigurator<BuilderConfigurator>,
         NodeConfigurator<BuilderConfigurator> {
 
+    BuilderConfigurator skipToTxnId(long newTxnSeqId);
+    BuilderConfigurator skipToNodeId(long newNodeSeqId);
+
 }

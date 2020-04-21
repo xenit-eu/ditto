@@ -39,7 +39,7 @@ class DataSetBuilderProviderTest {
                         factory_Plus_1, factory_Plus_100);
     }
 
-    private class TestOrderedBuilderFactory implements DataSetBuilderFactory {
+    private static class TestOrderedBuilderFactory implements DataSetBuilderFactory {
 
         private final int order;
 

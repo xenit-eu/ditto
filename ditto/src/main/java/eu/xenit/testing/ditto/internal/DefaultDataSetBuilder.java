@@ -46,12 +46,6 @@ public final class DefaultDataSetBuilder implements DataSetBuilder {
     }
 
     @Override
-    public DataSetBuilder skipToTransaction(long newTxnSeqId) {
-        this.context.skipToTransactionId(newTxnSeqId);
-        return this;
-    }
-
-    @Override
     public DataSetBuilder configure(Consumer<BuilderConfigurator> configurer) {
         configurer.accept(new DefaultBuilderConfigurator(this.context));
         return this;
@@ -60,6 +54,6 @@ public final class DefaultDataSetBuilder implements DataSetBuilder {
     @Override
     public AlfrescoDataSet build() {
         Cursor newCursor = this.repository.process(this.cursor, this.transactions.stream());
-        return new DefaultAlfrescoDataSet(this.repository, newCursor);
+        return new DefaultAlfrescoDataSet(this.repository, newCursor, this.context);
     }
 }

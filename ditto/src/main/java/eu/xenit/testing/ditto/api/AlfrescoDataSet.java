@@ -49,6 +49,9 @@ public interface AlfrescoDataSet {
         return builder().build();
     }
 
+
+    DataSetBuilder toBuilder();
+
     @Deprecated
     Node getNamedReference(String name);
 

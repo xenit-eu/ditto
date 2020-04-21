@@ -6,10 +6,16 @@ public interface DataSetBuilder {
 
     DataSetBuilder addTransaction(Consumer<TransactionCustomizer> callback);
 
-    DataSetBuilder skipToTransaction(long newTxnSeqId);
-
-    DataSetBuilder configure(Consumer<BuilderConfigurator> configurer);
+    DataSetBuilder configure(Consumer<BuilderConfigurator> callback);
 
     AlfrescoDataSet build();
+
+    /**
+     * @deprecated you can configure the next transaction sequence id with {@link #configure(Consumer)}
+     */
+    @Deprecated
+    default DataSetBuilder skipToTransaction(long newTxnSeqId) {
+        return this.configure(config -> config.skipToTxnId(newTxnSeqId));
+    }
 
 }

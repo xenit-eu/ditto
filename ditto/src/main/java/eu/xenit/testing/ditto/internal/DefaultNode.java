@@ -269,6 +269,13 @@ public class DefaultNode implements Node {
             return new NodeReference(this.storeRefProtocol, this.storeRefIdentifier, this.uuid);
         }
 
+        public NodeCustomizer nodeRef(NodeReference nodeReference) {
+            this.storeRefProtocol = nodeReference.getStoreProtocol();
+            this.storeRefIdentifier = nodeReference.getStoreIdentifier();
+            this.uuid = nodeReference.getUuid();
+            return this;
+        }
+
         @Getter
         @Accessors(fluent = true)
         private QName type = Content.OBJECT;

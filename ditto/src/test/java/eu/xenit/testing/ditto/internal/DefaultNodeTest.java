@@ -18,6 +18,7 @@ import eu.xenit.testing.ditto.api.model.QName;
 import eu.xenit.testing.ditto.internal.DefaultTransaction.TransactionContext;
 import java.time.Instant;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
@@ -48,7 +49,7 @@ class DefaultNodeTest {
             node.set(foo);
         }).build();
 
-        Node companyHome = dataSet.getNodeView().getCompanyHome().orElseThrow(RuntimeException::new);
+        Node companyHome = dataSet.getNodeView().getCompanyHome().orElseThrow(NoSuchElementException::new);
         assertThat(node.get()).hasParent(p -> p.isEqualTo(companyHome));
     }
 
