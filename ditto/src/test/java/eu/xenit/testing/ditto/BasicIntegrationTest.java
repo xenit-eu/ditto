@@ -52,6 +52,7 @@ class BasicIntegrationTest {
                             .last().satisfies(txn -> assertThat(txn.getId()).isEqualTo(12345L));
                 });
     }
+
     @Test
     void checkNodeViewBasics() {
         // Sanity check node-view
@@ -121,6 +122,29 @@ class BasicIntegrationTest {
                         .hasName("branch2.txt")
                         .hasTxnId(12346L)
                         .hasNodeId(4322L));
+    }
+
+    @Test
+    void addRoot() {
+        AlfrescoDataSet dataSetWithoutBootStrap = AlfrescoDataSet.builder()
+                .addTransaction(txn -> {
+                    txn.skipToNodeId(1000L);
+                    txn.addRoot();
+                }).build();
+
+        assertThat(
+                dataSetWithoutBootStrap.getNodeView().getNode(1000L)
+                        .orElseThrow(NullPointerException::new).getParent())
+                .isNull();
+
+        AlfrescoDataSet dataSet = AlfrescoDataSet.bootstrapAlfresco()
+                .addTransaction(txn -> {
+                    txn.skipToNodeId(1000L);
+                    txn.addRoot();
+                }).build();
+
+        assertThat(dataSet.getNodeView().getNode(1000L).orElseThrow(NullPointerException::new).getParent())
+                .isNull();
     }
 
 }
