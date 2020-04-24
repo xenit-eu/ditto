@@ -1,17 +1,17 @@
 package eu.xenit.testing.ditto.internal;
 
 import eu.xenit.testing.ditto.api.NodeCustomizer;
+import eu.xenit.testing.ditto.api.TransactionCustomizer;
 import eu.xenit.testing.ditto.api.content.SwarmContentServiceCustomizer;
+import eu.xenit.testing.ditto.api.data.ContentModel;
 import eu.xenit.testing.ditto.api.data.ContentModel.Content;
 import eu.xenit.testing.ditto.api.data.ContentModel.System;
-import eu.xenit.testing.ditto.api.model.QName;
-import eu.xenit.testing.ditto.internal.content.ContentUrlProviderSpi;
 import eu.xenit.testing.ditto.api.model.Node;
 import eu.xenit.testing.ditto.api.model.NodeReference;
+import eu.xenit.testing.ditto.api.model.QName;
 import eu.xenit.testing.ditto.api.model.Transaction;
-import eu.xenit.testing.ditto.api.TransactionCustomizer;
-import eu.xenit.testing.ditto.api.data.ContentModel;
 import eu.xenit.testing.ditto.internal.DefaultNode.NodeBuilder;
+import eu.xenit.testing.ditto.internal.content.ContentUrlProviderSpi;
 import eu.xenit.testing.ditto.internal.content.FileSystemContentUrlProvider;
 import eu.xenit.testing.ditto.internal.content.SwarmContentServiceConfiguration;
 import eu.xenit.testing.ditto.internal.content.SwarmContentUrlProvider;
@@ -38,8 +38,7 @@ public class DefaultTransaction implements Transaction {
     private Set<Node> updated;
     private Set<Node> deleted;
 
-    private DefaultTransaction(TransactionBuilder builder)
-    {
+    private DefaultTransaction(TransactionBuilder builder) {
         this.id = builder.context.txnId;
         this.changeId = builder.changeId;
         this.commitTimeMs = builder.commitTimeMs;
@@ -66,7 +65,7 @@ public class DefaultTransaction implements Transaction {
 
         TransactionContext(RootContext context) {
             this.rootContext = context;
-            this.txnId  = context.nextTxnId();
+            this.txnId = context.nextTxnId();
         }
 
         public Instant now() {
@@ -155,8 +154,7 @@ public class DefaultTransaction implements Transaction {
         }
 
         @Override
-        public TransactionBuilder skipToNodeId(long nodeId)
-        {
+        public TransactionBuilder skipToNodeId(long nodeId) {
             this.context.skipToNodeId(nodeId);
             return this;
         }
@@ -191,15 +189,14 @@ public class DefaultTransaction implements Transaction {
 
         @Override
         public Node addRoot(Consumer<NodeCustomizer> callback) {
-            return this.addNode(null, null, node -> {
-                node.type(System.STORE_ROOT);
-                node.aspect(System.ASPECT_ROOT);
-                callback.accept(node);
+            NodeBuilder builder = DefaultNode.builder(this.context, null, null);
+            builder.type(System.STORE_ROOT);
+            builder.aspect(System.ASPECT_ROOT);
+            callback.accept(builder);
 
-                node.callback(root -> {
-                    this.context.registerStoreRoot(root);
-                });
-            });
+            DefaultNode node = builder.build();
+            this.updated.put(node.getNodeRef(), node);
+            return node;
         }
 
         @Override
