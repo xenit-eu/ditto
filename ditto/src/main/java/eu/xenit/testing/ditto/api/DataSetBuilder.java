@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 
 public interface DataSetBuilder {
 
-    DataSetBuilder addTransaction(Consumer<TransactionCustomizer> callback);
+    DataSetBuilder addTransaction(Consumer<TransactionBuilder> callback);
 
     DataSetBuilder configure(Consumer<BuilderConfigurator> callback);
 

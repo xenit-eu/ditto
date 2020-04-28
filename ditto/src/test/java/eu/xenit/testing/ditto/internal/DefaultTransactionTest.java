@@ -5,7 +5,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import eu.xenit.testing.ditto.api.model.Node;
-import eu.xenit.testing.ditto.internal.DefaultTransaction.TransactionBuilder;
+import eu.xenit.testing.ditto.api.model.Transaction;
+import eu.xenit.testing.ditto.internal.DefaultTransaction.DefaultTransactionBuilder;
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
 
@@ -16,14 +17,14 @@ class DefaultTransactionTest {
         RootContext root = mock(RootContext.class);
         when(root.now()).thenReturn(Instant.now());
 
-        TransactionBuilder builder = DefaultTransaction.builder(root);
+        DefaultTransactionBuilder builder = DefaultTransaction.builder(root, null);
         builder.addNode(node -> node.name("1"));
         builder.addNode(node -> node.name("2"));
         builder.addNode(node -> node.name("3"));
         builder.addNode(node -> node.name("4"));
         builder.addNode(node -> node.name("5"));
 
-        DefaultTransaction txn = builder.build();
+        Transaction txn = builder.build();
 
         assertThat(txn.getUpdated().stream().map(Node::getName))
                 .containsSequence("1", "2", "3", "4", "5");
@@ -34,13 +35,13 @@ class DefaultTransactionTest {
     void testGetNodeByNodeRef_fromTxnCustomizer() {
         MockRootContext root = new MockRootContext();
 
-        TransactionBuilder txn1 = DefaultTransaction.builder(root);
+        DefaultTransactionBuilder txn1 = DefaultTransaction.builder(root, null);
         txn1.addNode(node -> {
             node.name("foo.doc");
             node.uuid("abc-123");
         });
 
-        TransactionBuilder txn2 = DefaultTransaction.builder(root);
+        DefaultTransactionBuilder txn2 = DefaultTransaction.builder(root, null);
         Node node = txn2.getNodeByNodeRef("workspace://SpacesStore/abc-123");
 
         assertThat(node).isNotNull();
