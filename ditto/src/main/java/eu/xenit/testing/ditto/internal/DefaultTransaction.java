@@ -1,7 +1,8 @@
 package eu.xenit.testing.ditto.internal;
 
+import eu.xenit.testing.ditto.api.AlfrescoDataSet;
 import eu.xenit.testing.ditto.api.NodeCustomizer;
-import eu.xenit.testing.ditto.api.TransactionCustomizer;
+import eu.xenit.testing.ditto.api.TransactionBuilder;
 import eu.xenit.testing.ditto.api.content.SwarmContentServiceCustomizer;
 import eu.xenit.testing.ditto.api.data.ContentModel;
 import eu.xenit.testing.ditto.api.data.ContentModel.Content;
@@ -20,9 +21,13 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Locale;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -38,7 +43,7 @@ public class DefaultTransaction implements Transaction {
     private Set<Node> updated;
     private Set<Node> deleted;
 
-    private DefaultTransaction(TransactionBuilder builder) {
+    private DefaultTransaction(DefaultTransactionBuilder builder) {
         this.id = builder.context.txnId;
         this.changeId = builder.changeId;
         this.commitTimeMs = builder.commitTimeMs;
@@ -52,8 +57,8 @@ public class DefaultTransaction implements Transaction {
         return String.format("Txn[id=%s; uuid=%s]", this.id, this.changeId);
     }
 
-    static TransactionBuilder builder(RootContext context) {
-        return new TransactionBuilder(context);
+    static DefaultTransactionBuilder builder(RootContext context, Function<Transaction, AlfrescoDataSet> projection) {
+        return new DefaultTransactionBuilder(context, projection);
     }
 
     static class TransactionContext {
@@ -109,11 +114,6 @@ public class DefaultTransaction implements Transaction {
             return this.rootContext.resolveQName(qname);
         }
 
-        public void registerStoreRoot(Node root) {
-
-        }
-
-
         QName getDefaultChildAssocType() {
             return this.rootContext.getDefaultChildAssocType();
         }
@@ -121,17 +121,9 @@ public class DefaultTransaction implements Transaction {
         Node getDefaultParentNode() {
             return this.rootContext.getDefaultParentNode();
         }
-
-        public Node getNodeByNodeRef(NodeReference nodeRef) {
-            return this.rootContext.getNodeByNodeRef(nodeRef);
-        }
-
-        void onNodeSaved(Node node) {
-            this.rootContext.onNodeSaved(node);
-        }
     }
 
-    public static class TransactionBuilder implements TransactionCustomizer {
+    public static class DefaultTransactionBuilder implements TransactionBuilder {
 
         private String changeId;
 
@@ -140,16 +132,20 @@ public class DefaultTransaction implements Transaction {
 
         private long commitTimeMs;
 
+        private final Function<Transaction, AlfrescoDataSet> projection;
+
         private final TransactionContext context;
 
-        private TransactionBuilder(RootContext rootContext) {
+        public DefaultTransactionBuilder(RootContext rootContext, Function<Transaction, AlfrescoDataSet> projection) {
             this.context = new TransactionContext(rootContext);
+            this.projection = projection;
 
             this.commitTimeMs = rootContext.commitTimeInMillis();
             this.changeId = UUID.randomUUID().toString();
         }
 
-        DefaultTransaction build() {
+
+        Transaction build() {
             return new DefaultTransaction(this);
         }
 
@@ -215,9 +211,13 @@ public class DefaultTransaction implements Transaction {
             });
         }
 
+        /**
+         * Deprecated, use {@link #getNode(String)} instead.
+         */
         @Override
+        @Deprecated
         public Node getNodeByNodeRef(String nodeRef) {
-            return this.context.getNodeByNodeRef(NodeReference.parse(nodeRef));
+            return this.getNode(nodeRef).orElseThrow(NoSuchElementException::new);
         }
 
         @Override
@@ -243,5 +243,29 @@ public class DefaultTransaction implements Transaction {
             return this;
         }
 
+        @Override
+        public Optional<Node> getNode(long nodeId) {
+            return this.projection.apply(this.build()).getNodeView().getNode(nodeId);
+        }
+
+        @Override
+        public Optional<Node> getNode(NodeReference nodeRef) {
+            return this.projection.apply(this.build()).getNodeView().getNode(nodeRef);
+        }
+
+        @Override
+        public Stream<Node> allNodes() {
+            return this.projection.apply(this.build()).getNodeView().allNodes();
+        }
+
+        @Override
+        public Stream<Node> rootNodes() {
+            return this.projection.apply(this.build()).getNodeView().rootNodes();
+        }
+
+        @Override
+        public Optional<Node> getCompanyHome() {
+            return this.projection.apply(this.build()).getNodeView().getCompanyHome();
+        }
     }
 }

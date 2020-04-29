@@ -157,15 +157,4 @@ public class RootContext {
     @Getter(AccessLevel.PACKAGE)
     @Setter(AccessLevel.PACKAGE)
     private Node defaultParentNode = null;
-
-    private Map<NodeReference, Node> nodes = new HashMap<>();
-
-    void onNodeSaved(Node node) {
-        Objects.requireNonNull(node, "Argument 'node' is required");
-        this.nodes.put(node.getNodeRef(), node);
-    }
-
-    Node getNodeByNodeRef(NodeReference nodeRef) {
-        return nodes.get(nodeRef);
-    }
 }

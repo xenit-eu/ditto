@@ -25,11 +25,6 @@ public class DefaultNodeView implements NodeView {
         this.cursor = cursor;
     }
 
-    public Optional<Node> getNode(String nodeRef) {
-        Assert.hasText(nodeRef, "Argument 'nodeRef' should not be empty or null");
-        return this.getNode(NodeReference.parse(nodeRef));
-    }
-
     public Optional<Node> getNode(NodeReference nodeRef) {
         Objects.requireNonNull(nodeRef, "Argument 'nodeRef' is required");
         return this.repository.getNode(nodeRef, this.cursor);
@@ -39,12 +34,12 @@ public class DefaultNodeView implements NodeView {
         return this.repository.getNode(nodeId, cursor);
     }
 
-    public Stream<Node> stream() {
+    public Stream<Node> allNodes() {
         return this.repository.stream(this.cursor);
     }
 
     @Override
-    public Stream<Node> roots() {
+    public Stream<Node> rootNodes() {
         return this.stream()
                 .filter(n -> n.getType().equals(System.STORE_ROOT))
 

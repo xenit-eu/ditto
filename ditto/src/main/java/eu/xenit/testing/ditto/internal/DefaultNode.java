@@ -181,14 +181,9 @@ public class DefaultNode implements Node {
             return this.contentDataMap.get(propertyName);
         }
 
-        void skipToContentDataId(long contentDataId) {
-            txnContext.skipToContentDataId(contentDataId);
-        }
-
         long nextContentDataId() {
             return txnContext.nextContentDataId();
         }
-
 
         @Deprecated
         void createNamedReference(String name, Node node) {
@@ -197,10 +192,6 @@ public class DefaultNode implements Node {
 
         QName resolveQName(String qname) {
             return this.txnContext.resolveQName(qname);
-        }
-
-        void onNodeSaved(DefaultNode node) {
-            this.txnContext.onNodeSaved(node);
         }
     }
 
@@ -235,11 +226,7 @@ public class DefaultNode implements Node {
 
         DefaultNode build() {
             DefaultNode node = new DefaultNode(this);
-
             this.callbacks.forEach(callback -> callback.accept(node));
-
-            this.context.onNodeSaved(node);
-
             return node;
         }
 

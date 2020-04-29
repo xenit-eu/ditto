@@ -1,5 +1,6 @@
 package eu.xenit.testing.ditto.api.model;
 
+import java.util.Objects;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -47,7 +48,11 @@ public class NodeReference {
     }
 
     public static NodeReference newNodeRef() {
-        return new NodeReference(STOREREF_PROT_WORKSPACE, STOREREF_ID_SPACESSTORE, UUID.randomUUID().toString());
+        return workspaceSpacesStore(UUID.randomUUID().toString());
+    }
+
+    public static NodeReference workspaceSpacesStore(String uuid) {
+        return new NodeReference(STOREREF_PROT_WORKSPACE, STOREREF_ID_SPACESSTORE, Objects.requireNonNull(uuid));
     }
 
     @Override

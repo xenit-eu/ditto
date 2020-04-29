@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 class BasicIntegrationTest {
 
-    private final NodeReference NODEREF_FOO_TXT = NodeReference.newNodeRef();
+    private final String UUID_FOO_TXT = "e626e80e-89f9-11ea-a0d1-4316cac35811";
 
     private AlfrescoDataSet dataSet = AlfrescoDataSet.bootstrapAlfresco()
             .configure(config -> {
@@ -21,7 +21,7 @@ class BasicIntegrationTest {
             })
             .addTransaction(txn -> {
                 txn.addNode(doc -> {
-                    doc.nodeRef(NODEREF_FOO_TXT);
+                    doc.uuid(UUID_FOO_TXT);
                     doc.type(Content.CONTENT);
                     doc.name("foo.txt");
                     doc.content("foobar");
@@ -73,7 +73,7 @@ class BasicIntegrationTest {
                 .as("%s should not be null", ContentView.class.getSimpleName())
                 .isNotNull()
                 .satisfies(contentView -> {
-                    assertThat(contentView.getContent(NODEREF_FOO_TXT))
+                    assertThat(contentView.getContent(NodeReference.workspaceSpacesStore(UUID_FOO_TXT)))
                             .isPresent()
                             .hasValueSatisfying(stream -> {
                                 assertThat(stream).hasContent("foobar");

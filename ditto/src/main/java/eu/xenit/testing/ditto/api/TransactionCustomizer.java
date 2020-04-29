@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 
 public interface TransactionCustomizer extends ContentServiceConfigurator<TransactionCustomizer> {
 
+    // Consider moving this in to a configurator object, together with the ContentServiceConfigurator
     TransactionCustomizer skipToNodeId(long nodeId);
 
     Node addNode(Node parent, QName assocType, Consumer<NodeCustomizer> customizer);
@@ -17,6 +18,7 @@ public interface TransactionCustomizer extends ContentServiceConfigurator<Transa
     Node addDocument(Node parent, Consumer<NodeCustomizer> callback);
     Node addFolder(Node parent, Consumer<NodeCustomizer> callback);
 
+    @Deprecated
     Node getNodeByNodeRef(String nodeRef);
 
     default Node addRoot() {
