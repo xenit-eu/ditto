@@ -30,21 +30,4 @@ class DefaultTransactionTest {
                 .containsSequence("1", "2", "3", "4", "5");
 
     }
-
-    @Test
-    void testGetNodeByNodeRef_fromTxnCustomizer() {
-        MockRootContext root = new MockRootContext();
-
-        DefaultTransactionBuilder txn1 = DefaultTransaction.builder(root, null);
-        txn1.addNode(node -> {
-            node.name("foo.doc");
-            node.uuid("abc-123");
-        });
-
-        DefaultTransactionBuilder txn2 = DefaultTransaction.builder(root, null);
-        Node node = txn2.getNodeByNodeRef("workspace://SpacesStore/abc-123");
-
-        assertThat(node).isNotNull();
-        assertThat(node.getName()).isEqualTo("foo.doc");
-    }
 }

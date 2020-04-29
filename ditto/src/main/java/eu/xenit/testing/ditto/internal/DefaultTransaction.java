@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -120,14 +121,6 @@ public class DefaultTransaction implements Transaction {
         Node getDefaultParentNode() {
             return this.rootContext.getDefaultParentNode();
         }
-
-        public Node getNodeByNodeRef(NodeReference nodeRef) {
-            return this.rootContext.getNodeByNodeRef(nodeRef);
-        }
-
-        void onNodeSaved(Node node) {
-            this.rootContext.onNodeSaved(node);
-        }
     }
 
     public static class DefaultTransactionBuilder implements TransactionBuilder {
@@ -218,25 +211,29 @@ public class DefaultTransaction implements Transaction {
             });
         }
 
+        /**
+         * Deprecated, use {@link #getNode(String)} instead.
+         */
         @Override
+        @Deprecated
         public Node getNodeByNodeRef(String nodeRef) {
-            return this.context.getNodeByNodeRef(NodeReference.parse(nodeRef));
+            return this.getNode(nodeRef).orElseThrow(NoSuchElementException::new);
         }
 
         @Override
-        public DefaultTransactionBuilder resetDefaultContentUrlProvider() {
+        public TransactionBuilder resetDefaultContentUrlProvider() {
             this.context.setContentUrlProvider(null);
             return this;
         }
 
         @Override
-        public DefaultTransactionBuilder useFileSystemContentService() {
+        public TransactionBuilder useFileSystemContentService() {
             this.context.setContentUrlProvider(new FileSystemContentUrlProvider());
             return this;
         }
 
         @Override
-        public DefaultTransactionBuilder useSwarmContentService(Consumer<SwarmContentServiceCustomizer> customizer) {
+        public TransactionBuilder useSwarmContentService(Consumer<SwarmContentServiceCustomizer> customizer) {
             SwarmContentServiceConfiguration config = new SwarmContentServiceConfiguration();
             customizer.accept(config);
 
