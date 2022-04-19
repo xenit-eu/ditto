@@ -25,17 +25,17 @@ public class ContentRepository extends DataRepositoryBase implements Transaction
 
     @Override
     public void process(long recordId, RecordChain chain, Transaction txn) {
-        txn.getUpdated().forEach(node -> {
-            node.getProperties().forEach((key, value) -> {
-                if (value instanceof InternalContentData) {
-                    InternalContentData contentData = (InternalContentData) value;
+        txn.getUpdated().forEach(node -> node
+                        .getProperties()
+                        .forEach((key, value) -> {
+                    if (value instanceof InternalContentData) {
+                        InternalContentData contentData = (InternalContentData) value;
 
-                    this.store(chain, recordId, contentData)
-                            .withIndex(this.contentUrlMap, tuple -> tuple.data.getContentUrl())
-                            .withIndex(this.contentPropMap, tuple -> new ContentPropertyKey(node.getNodeRef(), key));
-                }
-            });
-        });
+                        this.store(chain, recordId, contentData)
+                                .withIndex(this.contentUrlMap, tuple -> tuple.data.getContentUrl())
+                                .withIndex(this.contentPropMap, tuple -> new ContentPropertyKey(node.getNodeRef(), key));
+                    }
+        }));
 
         txn.getDeleted().forEach(delete -> {
             throw new UnsupportedOperationException("not implemented");

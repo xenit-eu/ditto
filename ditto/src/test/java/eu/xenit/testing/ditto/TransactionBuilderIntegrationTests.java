@@ -14,7 +14,7 @@ class TransactionBuilderIntegrationTests {
 
     private final NodeReference NODEREF_FOLDER = NodeReference.newNodeRef();
 
-    private AlfrescoDataSet dataSet = AlfrescoDataSet.bootstrapAlfresco()
+    private final AlfrescoDataSet dataSet = AlfrescoDataSet.bootstrapAlfresco()
             .configure(config -> {
                 config.skipToTxnId(12345L);
                 config.skipToNodeId(4321L);

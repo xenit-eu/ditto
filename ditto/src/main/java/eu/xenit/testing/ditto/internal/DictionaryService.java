@@ -10,8 +10,8 @@ import java.util.stream.Stream;
 
 public class DictionaryService {
 
-    private Map<String, Namespace> namespaceByUriRegistry = new HashMap<>();
-    private Map<String, Namespace> namespaceByPrefix = new HashMap<>();
+    private final Map<String, Namespace> namespaceByUriRegistry = new HashMap<>();
+    private final Map<String, Namespace> namespaceByPrefix = new HashMap<>();
 
     public void registerNamespace(Namespace... namespaces) {
         Stream.of(namespaces).forEach(ns -> {

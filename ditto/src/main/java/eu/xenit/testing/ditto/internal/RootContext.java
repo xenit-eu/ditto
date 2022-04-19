@@ -139,7 +139,7 @@ public class RootContext {
 
     @Deprecated
     @Getter
-    private Map<String, Node> namedReferences = new LinkedHashMap<>();
+    private final Map<String, Node> namedReferences = new LinkedHashMap<>();
 
     @Deprecated
     void createNamedReference(String name, Node node) {

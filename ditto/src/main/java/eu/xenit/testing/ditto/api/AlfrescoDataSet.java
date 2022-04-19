@@ -30,7 +30,7 @@ public interface AlfrescoDataSet {
     }
 
     static DataSetBuilder bootstrapAlfresco(Instant bootstrapInstant) {
-        return bootstrapAlfresco(bootstrapInstant, (config) -> {});
+        return bootstrapAlfresco(bootstrapInstant, config -> {});
     }
 
     static DataSetBuilder bootstrapAlfresco(Instant bootstrapInstant, Consumer<BootstrapConfiguration> callback) {

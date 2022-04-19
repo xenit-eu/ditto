@@ -14,7 +14,7 @@ class BasicIntegrationTest {
 
     private final String UUID_FOO_TXT = "e626e80e-89f9-11ea-a0d1-4316cac35811";
 
-    private AlfrescoDataSet dataSet = AlfrescoDataSet.bootstrapAlfresco()
+    private final AlfrescoDataSet dataSet = AlfrescoDataSet.bootstrapAlfresco()
             .configure(config -> {
                 config.skipToTxnId(12345L);
                 config.skipToNodeId(4321L);

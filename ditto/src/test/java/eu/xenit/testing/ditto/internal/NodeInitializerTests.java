@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 public class NodeInitializerTests {
 
-    private static RootContext ctx = new MockRootContext();
+    private static final RootContext ctx = new MockRootContext();
 
     @Test
     void testBiDirectionalParentBinding() {

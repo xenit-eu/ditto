@@ -15,7 +15,7 @@ public abstract class ContentDataParser {
             this.key = key;
         }
 
-        private String key;
+        private final String key;
 
         public String getKey() {
             return key;

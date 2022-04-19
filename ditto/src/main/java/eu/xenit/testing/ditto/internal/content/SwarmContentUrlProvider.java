@@ -21,7 +21,7 @@ public class SwarmContentUrlProvider implements ContentUrlProviderSpi {
 
     public String createContentUrl(Node node, ContentContext context) {
         // TODO add logic for buckets ?!
-        return String.format("swarm://%s.bin", UUID.randomUUID().toString());
+        return String.format("swarm://%s.bin", UUID.randomUUID());
     }
 
 }

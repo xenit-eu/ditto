@@ -1,5 +1,6 @@
 plugins {
     id "io.codearte.nexus-staging" version "0.21.2"
+    id "be.vbgn.ci-detect" version "0.5.0"
 }
 
 nexusStaging {
@@ -9,14 +10,20 @@ nexusStaging {
 
 allprojects {
     group = 'eu.xenit.testing.ditto'
-    version = '0.5.0-SNAPSHOT'
+    version = '0.6.0'
+
+    boolean isRelease = ci.branch?.startsWith("release")
+    if (!isRelease) {
+        version += "-SNAPSHOT"
+    }
+
 }
 
 ext {
-    lombokVersion = '1.18.10'
-    junitVersion = '5.3.1'
-    assertjVersion = '3.11.1'
-    mockitoVersion = '3.1.0'
-    slf4jVersion = '1.7.29'
+    lombokVersion = '1.18.24'
+    junitVersion = '5.8.2'
+    assertjVersion = '3.21.0'
+    mockitoVersion = '4.4.0'
+    slf4jVersion = '1.7.36'
     codeAssertVersion = '0.9.8'
 }

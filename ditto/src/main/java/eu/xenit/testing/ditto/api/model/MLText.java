@@ -13,7 +13,7 @@ import lombok.Data;
 
 public class MLText implements Serializable {
 
-    private LinkedHashMap<Locale, String> data = new LinkedHashMap<>();
+    private final LinkedHashMap<Locale, String> data = new LinkedHashMap<>();
 
     private final Locale defaultLocale;
 
