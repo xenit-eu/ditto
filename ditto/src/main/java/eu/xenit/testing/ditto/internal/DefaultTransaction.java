@@ -40,8 +40,8 @@ public class DefaultTransaction implements Transaction {
     private final String changeId;
     private final long commitTimeMs;
 
-    private Set<Node> updated;
-    private Set<Node> deleted;
+    private final Set<Node> updated;
+    private final Set<Node> deleted;
 
     private DefaultTransaction(DefaultTransactionBuilder builder) {
         this.id = builder.context.txnId;
@@ -125,12 +125,12 @@ public class DefaultTransaction implements Transaction {
 
     public static class DefaultTransactionBuilder implements TransactionBuilder {
 
-        private String changeId;
+        private final String changeId;
 
-        private HashMap<NodeReference, Node> updated = new LinkedHashMap<>();
-        private HashMap<NodeReference, Node> deleted = new LinkedHashMap<>();
+        private final HashMap<NodeReference, Node> updated = new LinkedHashMap<>();
+        private final HashMap<NodeReference, Node> deleted = new LinkedHashMap<>();
 
-        private long commitTimeMs;
+        private final long commitTimeMs;
 
         private final Function<Transaction, AlfrescoDataSet> projection;
 

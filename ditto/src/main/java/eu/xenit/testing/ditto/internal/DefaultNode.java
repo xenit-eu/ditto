@@ -84,7 +84,7 @@ public class DefaultNode implements Node {
     @Getter
     private final Set<QName> aspects;
 
-    private static NodeInitializer init = new NodeInitializer();
+    private static final NodeInitializer init = new NodeInitializer();
 
     private DefaultNode(NodeBuilder builder) {
         this.nodeId = builder.nodeId;
@@ -296,7 +296,7 @@ public class DefaultNode implements Node {
 
 
         @Getter
-        private Map<QName, Serializable> properties = new HashMap<>();
+        private final Map<QName, Serializable> properties = new HashMap<>();
 
         @Getter
         @Setter
@@ -495,7 +495,7 @@ public class DefaultNode implements Node {
             return this;
         }
 
-        private List<Consumer<Node>> callbacks = new ArrayList<>();
+        private final List<Consumer<Node>> callbacks = new ArrayList<>();
 
         @Override
         public NodeBuilder callback(Consumer<Node> callback) {

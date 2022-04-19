@@ -22,10 +22,10 @@ public final class DefaultDataSetBuilder implements DataSetBuilder {
     private final Cursor cursor;
 
     @Getter(AccessLevel.PACKAGE)
-    private RootContext context;
+    private final RootContext context;
 
     @Getter(AccessLevel.PACKAGE)
-    private LinkedList<Transaction> transactions = new LinkedList<>();
+    private final LinkedList<Transaction> transactions = new LinkedList<>();
 
     DefaultDataSetBuilder(BootstrapConfiguration config) {
         this(new DataRepository(), null, new RootContext(config));

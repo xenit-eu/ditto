@@ -11,6 +11,12 @@ import java.util.function.Consumer;
 
 class AlfrescoBootstrapper<T extends DataSetBuilder> {
 
+    private static final String WORKSPACE = "workspace";
+    private static final String ALFRESCO_USER_STORE = "alfrescoUserStore";
+    private static final String VERSION_2_STORE = "version2Store";
+    private static final String ARCHIVE = "archive";
+    private static final String SPACE_ICON_DEFAULT = "space-icon-default";
+
     void configureBootstrap(BootstrapConfiguration config) {
         config.withNamespaces(System.NAMESPACE, Content.NAMESPACE, Version2.NAMESPACE);
     }
@@ -18,25 +24,25 @@ class AlfrescoBootstrapper<T extends DataSetBuilder> {
     T bootstrap(T builder) {
         builder.addTransaction(txn -> {
             Node userStoreRoot = txn.addRoot(root -> {
-                root.storeRefIdentifier("alfrescoUserStore");
+                root.storeRefIdentifier(ALFRESCO_USER_STORE);
                 root.storeRefProtocol("user");
             });
 
             Node userStoreContainer = txn.addNode(userStoreRoot, System.CHILDREN, node -> {
                 node.type(System.CONTAINER);
-                node.storeRefIdentifier("alfrescoUserStore");
+                node.storeRefIdentifier(ALFRESCO_USER_STORE);
                 node.storeRefProtocol("user");
             });
 
             Node people = txn.addNode(userStoreContainer, System.CHILDREN, node -> {
                 node.type(System.CONTAINER);
-                node.storeRefIdentifier("alfrescoUserStore");
+                node.storeRefIdentifier(ALFRESCO_USER_STORE);
                 node.storeRefProtocol("user");
             });
 
             txn.addNode(people, System.CHILDREN, node -> {
                 node.type(User.USER);
-                node.storeRefIdentifier("alfrescoUserStore");
+                node.storeRefIdentifier(ALFRESCO_USER_STORE);
                 node.storeRefProtocol("user");
                 node.property(User.USERNAME, "admin");
             });
@@ -46,10 +52,9 @@ class AlfrescoBootstrapper<T extends DataSetBuilder> {
         builder.skipToTransaction(4)
                 .addTransaction(txn -> {
                     txn.skipToNodeId(10);
-                    Node version2StoreRoot = txn.addRoot(root -> {
-                        root.storeRefIdentifier("version2Store");
-                        root.storeRefProtocol("workspace");
-                    });
+                    Node version2StoreRoot = txn.addRoot(root ->
+                            root.storeRefIdentifier(VERSION_2_STORE)
+                                .storeRefProtocol(WORKSPACE));
                     version2StoreRootHolder.set(version2StoreRoot);
                 });
 
@@ -58,7 +63,7 @@ class AlfrescoBootstrapper<T extends DataSetBuilder> {
                 .addTransaction(txn -> {
                     Node archiveStoreRoot = txn.addRoot(root -> {
                         root.storeRefIdentifier("SpacesStore");
-                        root.storeRefProtocol("archive");
+                        root.storeRefProtocol(ARCHIVE);
                     });
                     archiveStoreRootHolder.set(archiveStoreRoot);
                 });
@@ -79,7 +84,7 @@ class AlfrescoBootstrapper<T extends DataSetBuilder> {
                         node.mlProperty(Content.DESCRIPTION, "The company root space");
 
                         node.aspect(Application.UIFACETS);
-                        node.property(Application.ICON, "space-icon-default");
+                        node.property(Application.ICON, SPACE_ICON_DEFAULT);
                     });
                     companyHomeHolder.set(companyHome);
 
@@ -87,18 +92,14 @@ class AlfrescoBootstrapper<T extends DataSetBuilder> {
                         node.qname(Application.createQName("dictionary"));
                         node.mlProperty(Content.DESCRIPTION, "User managed definitions");
                     }));
-                    txn.addFolder(dataDictionary, appNode("Space Templates", node -> {
-                        node.mlProperty(Content.DESCRIPTION, "Space folder templates");
-                    }));
-                    txn.addFolder(dataDictionary, appNode("Presentation Templates", node -> {
-                        node.qname(Application.createQName("content_templates"));
-                    }));
+                    txn.addFolder(dataDictionary, appNode("Space Templates",
+                            node -> node.mlProperty(Content.DESCRIPTION, "Space folder templates")));
+                    txn.addFolder(dataDictionary, appNode("Presentation Templates",
+                            node -> node.qname(Application.createQName("content_templates"))));
                     txn.addFolder(dataDictionary, appNode("Email Templates"));
 
                     txn.skipToNodeId(25);
-                    txn.addFolder(companyHome, node -> {
-                        node.name("Guest Home");
-                    });
+                    txn.addFolder(companyHome, node -> node.name("Guest Home"));
                     txn.addNode(companyHome, node -> node.name("User Homes"));
                 });
 
@@ -154,9 +155,7 @@ class AlfrescoBootstrapper<T extends DataSetBuilder> {
                             versionNode(projectContractNode, NO_OP));
                 });
 
-        builder.configure(config -> {
-            config.setDefaultParentNode(companyHomeHolder.get());
-        });
+        builder.configure(config -> config.setDefaultParentNode(companyHomeHolder.get()));
 
         return builder;
     }
@@ -177,7 +176,7 @@ class AlfrescoBootstrapper<T extends DataSetBuilder> {
             node.mlProperty(Content.DESCRIPTION, capitalize(name));
 
             node.aspect(Application.UIFACETS);
-            node.property(Application.ICON, "space-icon-default");
+            node.property(Application.ICON, SPACE_ICON_DEFAULT);
 
             callback.accept(node);
         };
@@ -192,7 +191,7 @@ class AlfrescoBootstrapper<T extends DataSetBuilder> {
                     .mlProperty(Content.TITLE, name)
 
                     .aspect(Application.UIFACETS)
-                    .property(Application.ICON, "space-icon-default");
+                    .property(Application.ICON, SPACE_ICON_DEFAULT);
 
             callback.accept(node);
         };
@@ -205,8 +204,8 @@ class AlfrescoBootstrapper<T extends DataSetBuilder> {
     private Consumer<NodeCustomizer> versionHistoryNode(Node liveNode, Consumer<NodeCustomizer> callback) {
         return node -> {
             node.type(Version2.VERSION_HISTORY)
-                    .storeRefProtocol("workspace")
-                    .storeRefIdentifier("version2Store")
+                    .storeRefProtocol(WORKSPACE)
+                    .storeRefIdentifier(VERSION_2_STORE)
                     .property(Version2.VERSIONED_NODE_ID, liveNode.getNodeRef().getUuid());
             callback.accept(node);
         };
@@ -215,11 +214,11 @@ class AlfrescoBootstrapper<T extends DataSetBuilder> {
     private Consumer<NodeCustomizer> versionNode(Node liveNode, Consumer<NodeCustomizer> callback) {
         return node -> {
             node
-                    .storeRefProtocol("workspace")
-                    .storeRefIdentifier("version2Store");
+                    .storeRefProtocol(WORKSPACE)
+                    .storeRefIdentifier(VERSION_2_STORE);
             node.type(liveNode.getType());
 
-            liveNode.getProperties().stream().forEach((entry) -> {
+            liveNode.getProperties().stream().forEach(entry -> {
                 if (Content.CREATOR.equals(entry.getKey())) {
                     node.property(Version2.FROZEN_CREATOR, entry.getValue());
                     return;
@@ -260,7 +259,7 @@ class AlfrescoBootstrapper<T extends DataSetBuilder> {
         return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
     }
 
-    private final static Consumer<NodeCustomizer> NO_OP = whatever -> {
+    private static final Consumer<NodeCustomizer> NO_OP = whatever -> {
     };
 
 }

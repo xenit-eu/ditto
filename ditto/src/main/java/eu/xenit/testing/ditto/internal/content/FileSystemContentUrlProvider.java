@@ -37,7 +37,7 @@ public class FileSystemContentUrlProvider implements ContentUrlProviderSpi {
             contentUrl.append(bucket).append("/");
         }
 
-        contentUrl.append(UUID.randomUUID().toString()).append(".bin");
+        contentUrl.append(UUID.randomUUID()).append(".bin");
 
         return contentUrl.toString();
     }

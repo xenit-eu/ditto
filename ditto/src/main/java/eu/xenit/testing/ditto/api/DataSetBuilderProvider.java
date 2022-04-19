@@ -9,7 +9,7 @@ import java.util.stream.StreamSupport;
 
 class DataSetBuilderProvider {
 
-    private Iterable<DataSetBuilderFactory> loader;
+    private final Iterable<DataSetBuilderFactory> loader;
 
     private DataSetBuilderProvider() {
         this(ServiceLoader.load(DataSetBuilderFactory.class));
